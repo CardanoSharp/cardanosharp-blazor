@@ -68,6 +68,8 @@
 
 @code {
     [Parameter]
+    public bool AutoCloseOnConnect { get; set; }
+    [Parameter]
     public List<WalletExtension> SupportedExtensions { get; set; } = new List<WalletExtension>()
     {
         new WalletExtension() { 
@@ -126,7 +128,10 @@
             {
                 _connectedWallet = _wallets.First(x => x.Key == walletKey);
                 _wallets.First(x => x.Key == walletKey).Connected = true;
-                _showPopup = false;
+                if (AutoCloseOnConnect)
+                {
+                    _showPopup = false;
+                }
             }
             return result;
         }
