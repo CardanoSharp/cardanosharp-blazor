@@ -1,0 +1,382 @@
+﻿@page "/walletconnectortest"
+@using CardanoSharp.Blazor.Components
+@using CardanoSharp.Blazor.Components.Models;
+@using CardanoSharp.Blazor.TestApp.Shared;
+@using CardanoSharp.Wallet.Models.Transactions
+@using CardanoSharp.Wallet.Extensions;
+@inject HttpClient Http
+
+<PageTitle>Wallet Connector Test</PageTitle>
+
+<h1>Wallet Connector Test</h1>
+
+<WalletConnector @ref="myWebWallets"></WalletConnector>
+
+<div>
+    <span>RESULTS</span>
+    @foreach (var displayItem in DisplayResult)
+    {
+    <div>
+        @displayItem
+    </div>
+    }
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetNetworkId())">Get NetworkId</button>
+</div>
+<hr/>
+<div>
+    Amount (0 = dont use): <input type="text" @bind="GetUtxosAmount" /> 
+</div>
+<div>
+    Page (-1 = dont use): <input type="number" @bind="GetUtxosPaginatePage" /> 
+</div>
+<div>
+    Limit (-1 = dont use): <input type="number" @bind="GetUtxosPaginateLimit" /> 
+</div>
+<div>
+    <button @onclick="@(async e => await TestGetUtxos())">Get UTxOs</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetCollateral())">Get Collateral</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetBalance())">Get Balance</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetUsedAddresses())">Get Used Addresses</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetUnusedAddresses())">Get Unused Addresses</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetChangeAddress())">Get Change Address</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetRewardAddresses())">Get Reward Addresses</button>
+</div>
+<hr/>
+<div>
+    TX CBOR: <input type="text" @bind="SignTxData" /> 
+</div>
+<div>
+    To Address (use utxo from wallet): <input type="text" @bind="SignTxToAddress" /> 
+</div>
+<div>
+    Coin (use utxo from wallet): <input type="number" @bind="SignTxCoin" /> 
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestSignTx())">Sign Tx</button>
+</div>
+<hr/>
+<div>
+    ADDRESS: <input type="text" @bind="SignDataAddress" />
+</div>
+<div>
+    HEX DATA: <input type="text" @bind="SignDataHex" />
+</div>
+<div>
+    <button @onclick="@(async e => await TestSignData())">Sign Data</button>
+</div>
+<hr/>
+<div>
+    TX CBOR: <input type="text" @bind="SubmitTxData" /> 
+</div>
+<div>
+    <button @onclick="@(async e => await TestSubmitTx())">Submit Tx</button>
+</div>
+
+@code {
+    private WalletConnector? myWebWallets;
+    private string SignTxData = "";
+    private string SignDataAddress = "";
+    private string SignDataHex = "";
+    private string SubmitTxData = "";
+    private string SignTxToAddress = "";
+    private ulong SignTxCoin = 0; 
+    private ulong GetUtxosAmount = 0; 
+    private int GetUtxosPaginatePage = -1; 
+    private int GetUtxosPaginateLimit = -1; 
+
+    private List<string> DisplayResult = new List<string>();
+
+    private async ValueTask TestGetNetworkId()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetNetworkId();
+                DisplayResult.Clear();
+                DisplayResult.Add($"Network ID: {result}");
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetUtxos()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                TransactionUnspentOutput[]? result = null;
+                if (GetUtxosAmount == 0)
+                {
+                    result = await myWebWallets.GetUtxos();
+                }
+                else
+                {
+                    var requiredOutput = new TransactionOutputValue()
+                    {
+                        Coin = GetUtxosAmount
+                    };
+
+                    if (GetUtxosPaginateLimit != -1 && GetUtxosPaginatePage != -1)
+                    {
+                        result = await myWebWallets.GetUtxos(requiredOutput, new Paginate(GetUtxosPaginatePage, GetUtxosPaginateLimit));
+                    }
+                    else
+                    {
+                        result = await myWebWallets.GetUtxos(requiredOutput);
+                    }
+                }
+                DisplayResult.Clear();
+                if (result != null)
+                {
+                    DisplayResult.Add($"UTXOs ({result.Length}):");
+                    foreach (var item in result)
+                    {
+                        DisplayResult.Add($"INPUT # {item.Input.TransactionId.ToStringHex()}");
+                        DisplayResult.Add($"INPUT IDX {item.Input.TransactionIndex}");
+                        DisplayResult.Add($"OUTPUT COIN {item.Output.Value.Coin}");
+                    }
+                }
+                else
+                {
+                    DisplayResult.Add($"Return result is null");
+                }
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetCollateral()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetCollateral(new CollateralParams() { Amount = 5 });
+                DisplayResult.Clear();
+                if (result != null)
+                {
+                    DisplayResult.Add($"Collateral ({result.Length}):");
+                    DisplayResult.AddRange(result);
+                }
+                else
+                {
+                    DisplayResult.Add($"Return result is null");
+                }
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetBalance()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetBalance();
+                DisplayResult.Clear();
+                DisplayResult.Add($"Balance:");
+                DisplayResult.Add($" - Coin: {result.Coin}");
+                foreach (var asset in result.MultiAsset)
+                {
+                    var policyId = asset.Key.ToStringHex();
+                    DisplayResult.Add($" - Policy: {policyId}");
+
+                    foreach (var token in asset.Value.Token)
+                    {
+                        var assetName = token.Key.ToStringHex();
+                        DisplayResult.Add($"   - AssetName: {assetName}");
+                        DisplayResult.Add($"   - Tokens: {token.Value}");
+                    }
+                }
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetUsedAddresses()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetUsedAddresses();
+                DisplayResult.Clear();
+                DisplayResult.Add($"Used Addresses ({result.Length}):");
+                DisplayResult.AddRange(result);
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetUnusedAddresses()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetUnusedAddresses();
+                DisplayResult.Clear();
+                DisplayResult.Add($"Unused Addresses ({result.Length}):");
+                DisplayResult.AddRange(result);
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetChangeAddress()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetChangeAddress();
+                DisplayResult.Clear();
+                DisplayResult.Add($"Change Address:");
+                DisplayResult.Add(result);
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestGetRewardAddresses()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.GetRewardAddresses();
+                DisplayResult.Clear();
+                DisplayResult.Add($"Reward Addresses ({result.Length}):");
+                DisplayResult.AddRange(result);
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestSignTx()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                if (SignTxData != "")
+                {
+                    var result = await myWebWallets.SignTx(SignTxData);
+                    DisplayResult.Clear();
+                    DisplayResult.Add($"Sign TX (witness set cbor):");
+                    DisplayResult.Add(result);
+                    if (!String.IsNullOrEmpty(result))
+                    {
+                        var request = new AddWitnessRequest()
+                            {
+                                TxCbor = SignTxData,
+                                WitnessCbor = result
+                            };
+                        var response = await Http.PostAsJsonAsync<AddWitnessRequest>("/walletconnector/addwitness", request);
+                        var addWitnessResponse = await response.Content.ReadFromJsonAsync<AddWitnessResponse>();
+                        if (addWitnessResponse != null && !String.IsNullOrEmpty(addWitnessResponse.TxCbor))
+                        {
+                            DisplayResult.Add($"Added witness set to tx (tx cbor):");
+                            DisplayResult.Add(addWitnessResponse.TxCbor);
+                        }
+                    }
+                }
+                else if (SignTxToAddress != "" && SignTxCoin != 0)
+                {
+                    //use utxo from wallet to create transaction
+                    //var utxoResult = await myWebWallets.GetUtxos(SignTxCoin);
+                }
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestSignData()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.SignData(SignDataAddress, SignDataHex);
+                DisplayResult.Clear();
+                DisplayResult.Add($"Sign Data:");
+                DisplayResult.Add($" - Signature (cbor): {result.Signature}");
+                DisplayResult.Add($" - Key (cbor): {result.Key}");
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+
+    private async ValueTask TestSubmitTx()
+    {
+        if (myWebWallets != null && myWebWallets.Initialized)
+        {
+            if (myWebWallets.Connected)
+            {
+                var result = await myWebWallets.SubmitTx(SignTxData);
+                DisplayResult.Clear();
+                DisplayResult.Add($"Submit TX:");
+                DisplayResult.Add(result);
+            }
+            else
+            {
+                myWebWallets.ShowConnectWalletDialog();
+            }
+        }
+    }
+}

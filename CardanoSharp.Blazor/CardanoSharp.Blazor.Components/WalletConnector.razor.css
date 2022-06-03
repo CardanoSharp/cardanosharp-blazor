@@ -1,0 +1,110 @@
+﻿.wallet-connector {
+    display: inline-flex;
+}
+
+.wallet-item {
+    border-bottom: 1px solid grey;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.wallet-item:last-child {
+    border-bottom: none;
+}
+
+.wallet-icon {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.wallet-name {
+    padding: 0.5em;
+}
+
+.wallet-connector-button {
+    color: black;
+    display: inline-flex;
+    border: 1px solid grey;
+    border-radius: 1em;
+    padding: 1em;
+    cursor: pointer;
+    justify-content: space-around;
+    align-items: center;
+    min-width: 10em;
+    min-height: 4em;
+}
+.wallet-connector-button:hover,
+.wallet-connector-button:focus {
+    color: #aaa;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.wallet-button {
+    color: black;
+    display: inline-flex;
+    border: 1px solid grey;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    cursor: pointer;
+    min-width: 6em;
+    justify-content: center
+}
+.wallet-button:hover,
+.wallet-button:focus {
+    color: #aaa;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.wallet-button-disabled {
+    color: #ccc;
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    margin: 0.5em 0;
+    min-width: 6em;
+    justify-content: center
+}
+
+/* The Modal (background) */
+.modal {
+    display: inline-flex; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: fit-content; 
+    height: fit-content;
+}
+
+/* The Close Button */
+.close {
+    margin-left: auto;
+    color: black;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #aaa;
+    text-decoration: none;
+    cursor: pointer;
+}
