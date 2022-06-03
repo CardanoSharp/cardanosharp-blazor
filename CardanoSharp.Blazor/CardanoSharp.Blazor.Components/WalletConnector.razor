@@ -20,47 +20,57 @@
     @if (_showPopup)
     {
         <div id="myModal" class="modal">
-          <!-- Modal content -->
-          <div class="modal-content">
-            <span class="close" @onclick="HideConnectWalletDialog">&times;</span>
-            @if (Initialized)
-            {
-                @foreach (var extension in _wallets)
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close" @onclick="HideConnectWalletDialog">&times;</span>
+                <div class="modal-content-main">
+                @if (Initialized && _wallets != null)
                 {
-                <div class="wallet-item">
-                    <img class="wallet-icon" src="@extension.Icon" title="@extension.Name" />
-                    <span class="wallet-name">@extension.Name Wallet</span>
-                    @if (extension.Installed)
+                    @if (Connected && _connectedWallet != null)
                     {
-                        if (Connected)
-                        {
-                            @if (extension.Connected)
-                            {
-                                <div class="wallet-button" @onclick="@(async e => await DisconnectWalletClickAsync(e))">Disconnect</div>
-                            }
-                            else
-                            {
-                                <div class="wallet-button-disabled">Connect</div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="wallet-button" @onclick="@(async e => await ConnectWalletClickAsync(e, extension.Key))">Connect</div>
-                        }
+                        <div class="wallet-card">
+                            <span class="wallet-card-title">@_connectedWallet.Name Wallet</span>
+                            <img class="wallet-card-icon" src="@_connectedWallet.Icon" title="@_connectedWallet.Name" />
+                            <div>
+                                <div>
+                                    Balance 
+                                    <span>@_connectedWallet.BalanceAda</span>
+                                    <span>.</span>
+                                    <span>@_connectedWallet.BalanceRemainder</span>
+                                    <span>@_connectedWallet.CoinCurrency</span>
+                                </div>
+                                <div>Unavailable @_connectedWallet.TokenPreservation ADA/tADA</div>
+                                <div>Collectibles @_connectedWallet.TokenCount</div>
+                            </div>
+                            <div class="wallet-button" @onclick="@(async e => await DisconnectWalletClickAsync(e))">Disconnect</div>
+                        </div>
                     }
                     else
                     {
-                        <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
+                        @foreach (var extension in _wallets)
+                        {
+                        <div class="wallet-item">
+                            <img class="wallet-icon" src="@extension.Icon" title="@extension.Name" />
+                            <span class="wallet-name">@extension.Name Wallet</span>
+                            @if (extension.Installed)
+                            {
+                                <div class="wallet-button" @onclick="@(async e => await ConnectWalletClickAsync(e, extension.Key))">Connect</div>
+                            }
+                            else
+                            {
+                                <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
+                            }
+                        </div>
+                        }                
                     }
-                </div>
                 }
-            }
-            else
-            {
-                <div>
-                    <span>Looking for installed wallet extensions...</span>
+                else
+                {
+                    <div>
+                        <span>Looking for installed wallet extensions...</span>
+                    </div>
+                }
                 </div>
-            }
             </div>
         </div>
     }
@@ -69,6 +79,8 @@
 @code {
     [Parameter]
     public bool AutoCloseOnConnect { get; set; }
+    [Parameter]
+    public bool AutoCloseOnDisconnect { get; set; }
     [Parameter]
     public List<WalletExtension> SupportedExtensions { get; set; } = new List<WalletExtension>()
     {
@@ -94,7 +106,7 @@
 
     private List<WalletExtensionState>? _wallets = new List<WalletExtensionState>();
 
-    private WalletExtension? _connectedWallet;
+    private WalletExtensionState? _connectedWallet;
     private WalletConnectorJsInterop? _walletConnectorJs;
     private bool _showPopup;
     public bool Initialized { get; private set; }
@@ -127,6 +139,18 @@
             if (result)
             {
                 _connectedWallet = _wallets.First(x => x.Key == walletKey);
+                var balance = await GetBalance();
+                if (balance != null)
+                {
+                    _connectedWallet.TokenCount = 0;
+                    _connectedWallet.TokenPreservation = 0;
+                    if (balance.MultiAsset != null && balance.MultiAsset.Count > 0)
+                    {
+                        _connectedWallet.TokenPreservation = balance.MultiAsset.CalculateMinUtxoLovelace();
+                        _connectedWallet.TokenCount = balance.MultiAsset.Sum(x => x.Value.Token.Keys.Count);
+                    }
+                    _connectedWallet.Balance = balance.Coin - _connectedWallet.TokenPreservation;
+                }
                 _wallets.First(x => x.Key == walletKey).Connected = true;
                 if (AutoCloseOnConnect)
                 {
@@ -164,7 +188,10 @@
             _wallets.First(x => x.Connected).Connected = false;
         }
         _connectedWallet = null;
-        _showPopup = false;
+        if (AutoCloseOnDisconnect)
+        {
+            _showPopup = false;
+        }
         return;
     }
 
