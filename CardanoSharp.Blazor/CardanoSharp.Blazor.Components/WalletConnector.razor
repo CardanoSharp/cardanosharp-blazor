@@ -9,7 +9,7 @@
 
 @inject IJSRuntime JS
 
-<div class="wallet-connector" @onkeydown="@(e => HandleKeyDown(e))">
+<div class="wallet-connector">
     @if (!Connected)
     {
         <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connect Wallet</div>
@@ -273,12 +273,6 @@
     {
         _showPopup = false;
         StateHasChanged();
-    }
-
-    public void HandleKeyDown(KeyboardEventArgs e)
-    {
-        Console.WriteLine("Keyboard event: " + e.Code + " " + e.Key);
-        return;
     }
 
     public async ValueTask<NetworkId> GetNetworkId()

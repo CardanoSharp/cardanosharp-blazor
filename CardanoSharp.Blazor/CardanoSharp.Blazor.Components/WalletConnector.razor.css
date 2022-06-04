@@ -72,7 +72,8 @@
     margin: 0.5em 0;
     cursor: pointer;
     min-width: 6em;
-    justify-content: center
+    justify-content: center;
+    text-decoration: none;
 }
 .wallet-button:hover,
 .wallet-button:focus {
