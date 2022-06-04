@@ -299,10 +299,16 @@
         return utxoList.ToArray();
     }
 
-    public async ValueTask<string[]> GetCollateral(CollateralParams collateralParams)
+    public async ValueTask<TransactionUnspentOutput[]> GetCollateral(CollateralParams collateralParams)
     {
         CheckInitializedAndConnected();
-        return await _walletConnectorJs.GetCollateral(collateralParams);
+        var utxoCbors = await _walletConnectorJs.GetCollateral(collateralParams);
+        var utxoList = new List<TransactionUnspentOutput>();
+        foreach (var utxoCbor in utxoCbors)
+        {
+            utxoList.Add(utxoCbor.HexToByteArray().DeserializeTransactionUnspentOutput());
+        }
+        return utxoList.ToArray();
     }
 
     public async ValueTask<TransactionOutputValue> GetBalance()
@@ -338,9 +344,11 @@
         return await _walletConnectorJs.GetRewardAddresses();
     }
 
-    public async ValueTask<string> SignTx(string txCbor, bool partialSign = false)
+    public async ValueTask<string> SignTx(Transaction tx, bool partialSign = false)
     {
         CheckInitializedAndConnected();
+        //TODO: write function to check tx for unsigned witnesses that might trigger cryptography during serialization
+        var txCbor = tx.Serialize().ToStringHex();
         return await _walletConnectorJs.SignTx(txCbor, partialSign);
     }
 
@@ -350,9 +358,11 @@
         return await _walletConnectorJs.SignData(address, hexData);
     }
 
-    public async ValueTask<string> SubmitTx(string txCbor)
+    public async ValueTask<string> SubmitTx(Transaction tx)
     {
         CheckInitializedAndConnected();
+        //TODO: write function to check tx for unsigned witnesses that might trigger cryptography during serialization
+        var txCbor = tx.Serialize().ToStringHex();
         return await _walletConnectorJs.SubmitTx(txCbor);
     }
 }

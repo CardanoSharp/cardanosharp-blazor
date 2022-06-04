@@ -5,6 +5,7 @@
 @using CardanoSharp.Wallet.Models.Transactions
 @using CardanoSharp.Wallet.Extensions;
 @using CardanoSharp.Blazor.Components.Enums;
+@using CardanoSharp.Wallet.Extensions.Models.Transactions;
 @inject HttpClient Http
 
 <PageTitle>Wallet Connector Test</PageTitle>
@@ -187,7 +188,13 @@
                 if (result != null)
                 {
                     DisplayResult.Add($"Collateral ({result.Length}):");
-                    DisplayResult.AddRange(result);
+                    foreach (var utxo in result)
+                    {
+                        DisplayResult.Add($"UTXO.InputHash: {utxo.Input?.TransactionId.ToStringHex()}");
+                        DisplayResult.Add($"UTXO.InputIndex: {utxo.Input?.TransactionIndex}");
+                        DisplayResult.Add($"UTXO.OutputAddr: {utxo.Output?.Address.ToStringHex()}");
+                        DisplayResult.Add($"UTXO.InputHash: {utxo.Output?.Value.Coin}");
+                    }
                 }
                 else
                 {
@@ -311,7 +318,8 @@
             {
                 if (SignTxData != "")
                 {
-                    var result = await myWebWallets.SignTx(SignTxData);
+                    var tx = SignTxData.HexToByteArray().DeserializeTransaction();
+                    var result = await myWebWallets.SignTx(tx);
                     DisplayResult.Clear();
                     DisplayResult.Add($"Sign TX (witness set cbor):");
                     DisplayResult.Add(result);
@@ -369,7 +377,9 @@
         {
             if (myWebWallets.Connected)
             {
-                var result = await myWebWallets.SubmitTx(SignTxData);
+                var tx = new Transaction();
+                tx = SignTxData.HexToByteArray().DeserializeTransaction();
+                var result = await myWebWallets.SubmitTx(tx);
                 DisplayResult.Clear();
                 DisplayResult.Add($"Submit TX:");
                 DisplayResult.Add(result);
