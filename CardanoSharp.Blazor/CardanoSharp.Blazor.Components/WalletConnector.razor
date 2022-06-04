@@ -33,7 +33,7 @@
                             <span class="wallet-card-title">@_connectedWallet.Name Wallet</span>
                             <img class="wallet-card-icon" src="@_connectedWallet.Icon" title="@_connectedWallet.Name" />
                             <div class="wallet-balance-container">
-                                <div class="wallet-balance-row">
+                                <div class="wallet-balance-row dif centered">
                                     <span class="wallet-balance-header">Balance</span>
                                 </div>
                                 <div class="wallet-balance-row wallet-available">
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                                 <div class="wallet-balance-row wallet-unavailable">
-                                    <span>Unavailable</span>
+                                    <span>Reserved</span>
                                     <div class="wallet-adaamount-container">
                                         <span class="wallet-balance-ada">@_connectedWallet.TokenPreservationAda</span>
                                         <span class="wallet-balance-decimal">.</span>
@@ -54,7 +54,9 @@
                                         <span class="wallet-balance-currency">@_connectedWallet.CoinCurrency</span>
                                     </div>
                                 </div>
-                                <div>Collectibles @_connectedWallet.TokenCount</div>
+                                <div class="wallet-balance-row dif centered">
+                                    <span>Collectibles @_connectedWallet.TokenCount</span>
+                                </div>
                             </div>
                             <div class="wallet-button" @onclick="@(async e => await DisconnectWalletClickAsync(e))">Disconnect</div>
                         </div>

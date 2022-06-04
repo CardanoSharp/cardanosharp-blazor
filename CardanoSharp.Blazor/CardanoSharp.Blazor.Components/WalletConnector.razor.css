@@ -136,7 +136,7 @@
 }
 
 .wallet-balance-header {
-    font-size: 1.2em;
+    font-size: 1.5em;
 }
 
 .wallet-balance-ada {
@@ -181,4 +181,12 @@
 
 .wallet-adaamount-container {
     margin-left: 1em;
+}
+
+.dif {
+    display: inline-flex;
+}
+
+.centered {
+    justify-content: center;
 }
