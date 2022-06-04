@@ -8,7 +8,7 @@
 
 @inject IJSRuntime JS
 
-<div class="wallet-connector">
+<div class="wallet-connector" @onkeydown="@(e => HandleKeyDown(e))">
     @if (!Connected)
     {
         <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connect Wallet</div>
@@ -119,7 +119,7 @@
     };
 
     private List<WalletExtensionState>? _wallets = new List<WalletExtensionState>();
-
+    private DotNetObjectReference<WalletConnector>? _selfReference;
     private WalletExtensionState? _connectedWallet;
     private WalletConnectorJsInterop? _walletConnectorJs;
     private bool _showPopup;
@@ -140,7 +140,8 @@
         }
         //check which wallets are installed
         //set up initial _wallets state from above
-        _wallets = await _walletConnectorJs.Init(SupportedExtensions);
+        _selfReference = DotNetObjectReference.Create(this);
+        _wallets = await _walletConnectorJs.Init(SupportedExtensions, _selfReference);
         Initialized = true;
         return;
     }
@@ -239,10 +240,17 @@
         StateHasChanged();
     }
 
+    [JSInvokable]
     public void HideConnectWalletDialog()
     {
         _showPopup = false;
         StateHasChanged();
+    }
+
+    public void HandleKeyDown(KeyboardEventArgs e)
+    {
+        Console.WriteLine("Keyboard event: " + e.Code + " " + e.Key);
+        return;
     }
 
     public async ValueTask<NetworkId> GetNetworkId()

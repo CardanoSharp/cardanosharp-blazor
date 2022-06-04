@@ -29,10 +29,12 @@ namespace CardanoSharp.Blazor.Components
                "import", "./_content/CardanoSharp.Blazor.Components/WalletConnectorJsInterop.js").AsTask());
         }
 
-        public async ValueTask<List<WalletExtensionState>> Init(IEnumerable<WalletExtension> supportedWallets)
+        public async ValueTask<List<WalletExtensionState>> Init(IEnumerable<WalletExtension> supportedWallets, DotNetObjectReference<WalletConnector> walletObj)
         {
             var module = await _moduleTask.Value;
             _jsWalletConnector = await module.InvokeAsync<IJSObjectReference>("createWalletConnector");
+
+            await _jsWalletConnector.InvokeVoidAsync("init", walletObj);
 
             Wallets = new List<WalletExtensionState>();
             foreach (var wallet in supportedWallets)
