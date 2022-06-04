@@ -17,18 +17,23 @@
     max-height: 30px;
 }
 
+.wallet-card-container {
+    max-width: 38em;
+}
+
 .wallet-card {
     display: inline-flex;
     flex-direction: column;
     align-items: center;
     border: 1px solid grey;
     border-radius: 1em;
-    padding: 1em;
+    padding: 0.5em;
+    margin: 0.2em;
 }
 
 .wallet-card-icon {
     max-width: 110px;
-    max-height: 110px;
+    max-height: 95px;
 }
 
 .wallet-card-title {
@@ -189,4 +194,8 @@
 
 .centered {
     justify-content: center;
+}
+
+.gc {
+    display: grid;
 }

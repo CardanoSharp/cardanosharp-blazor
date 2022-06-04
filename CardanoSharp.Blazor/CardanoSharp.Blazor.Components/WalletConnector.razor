@@ -3,6 +3,7 @@
 @using Microsoft.JSInterop
 @using CardanoSharp.Blazor.Components.Models
 @using CardanoSharp.Blazor.Components.Exceptions;
+@using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Wallet.Extensions;
 @using CardanoSharp.Wallet.Enums;
 
@@ -63,21 +64,44 @@
                     }
                     else
                     {
-                        @foreach (var extension in _wallets)
+                        @if (Layout == WalletConnectorLayout.List)
                         {
-                        <div class="wallet-item">
-                            <img class="wallet-icon" src="@extension.Icon" title="@extension.Name" />
-                            <span class="wallet-name">@extension.Name Wallet</span>
-                            @if (extension.Installed)
+                            @foreach (var extension in _wallets)
                             {
-                                <div class="wallet-button" @onclick="@(async e => await ConnectWalletClickAsync(e, extension.Key))">Connect</div>
+                            <div class="wallet-item">
+                                <img class="wallet-icon" src="@extension.Icon" title="@extension.Name" />
+                                <span class="wallet-name">@extension.Name Wallet</span>
+                                @if (extension.Installed)
+                                {
+                                    <div class="wallet-button" @onclick="@(async e => await ConnectWalletClickAsync(e, extension.Key))">Connect</div>
+                                }
+                                else
+                                {
+                                    <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
+                                }
+                            </div>
                             }
-                            else
+                        }
+                        else
+                        {
+                            <div class="wallet-card-container">
+                            @foreach (var extension in _wallets)
                             {
-                                <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
+                                <div class="wallet-card">
+                                    <span class="wallet-card-title">@extension.Name Wallet</span>
+                                    <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name" />
+                                    @if (extension.Installed)
+                                    {
+                                        <div class="wallet-button" @onclick="@(async e => await ConnectWalletClickAsync(e, extension.Key))">Connect</div>
+                                    }
+                                    else
+                                    {
+                                        <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
+                                    }
+                                </div>
                             }
-                        </div>
-                        }                
+                            </div>
+                        }
                     }
                 }
                 else
@@ -119,6 +143,8 @@
             Url = "https://namiwallet.io" 
         },
     };
+    [Parameter]
+    public WalletConnectorLayout Layout { get; set; } = WalletConnectorLayout.List;
 
     private List<WalletExtensionState>? _wallets = new List<WalletExtensionState>();
     private DotNetObjectReference<WalletConnector>? _selfReference;
