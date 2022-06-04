@@ -21,6 +21,9 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
+    border: 1px solid grey;
+    border-radius: 1em;
+    padding: 1em;
 }
 
 .wallet-card-icon {
@@ -130,4 +133,52 @@
     color: #aaa;
     text-decoration: none;
     cursor: pointer;
+}
+
+.wallet-balance-header {
+    font-size: 1.2em;
+}
+
+.wallet-balance-ada {
+    font-size: 1.2em;
+}
+
+.wallet-balance-decimal {
+    margin-left: -3px;
+    margin-right: -3px;
+}
+
+.wallet-balance-lovelace {
+    font-size: 0.8em;
+}
+
+.wallet-balance-currency {
+    font-size: 1.2em;
+}
+
+.wallet-unavailable {
+    font-size: 0.8em;
+}
+
+.wallet-refresh-button:hover,
+.wallet-refresh-button:focus {
+    color: #aaa;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.wallet-balance-row {
+    display: inline-flex;
+    width: auto;
+    justify-content: space-between;
+    align-items: center
+}
+
+.wallet-balance-container {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.wallet-adaamount-container {
+    margin-left: 1em;
 }

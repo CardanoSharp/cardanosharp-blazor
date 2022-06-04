@@ -4,6 +4,7 @@
 @using CardanoSharp.Blazor.Components.Models
 @using CardanoSharp.Blazor.Components.Exceptions;
 @using CardanoSharp.Wallet.Extensions;
+@using CardanoSharp.Wallet.Enums;
 
 @inject IJSRuntime JS
 
@@ -31,15 +32,28 @@
                         <div class="wallet-card">
                             <span class="wallet-card-title">@_connectedWallet.Name Wallet</span>
                             <img class="wallet-card-icon" src="@_connectedWallet.Icon" title="@_connectedWallet.Name" />
-                            <div>
-                                <div>
-                                    Balance 
-                                    <span>@_connectedWallet.BalanceAda</span>
-                                    <span>.</span>
-                                    <span>@_connectedWallet.BalanceRemainder</span>
-                                    <span>@_connectedWallet.CoinCurrency</span>
+                            <div class="wallet-balance-container">
+                                <div class="wallet-balance-row">
+                                    <span class="wallet-balance-header">Balance</span>
                                 </div>
-                                <div>Unavailable @_connectedWallet.TokenPreservation ADA/tADA</div>
+                                <div class="wallet-balance-row wallet-available">
+                                    <span>Available</span>
+                                    <div class="wallet-adaamount-container">
+                                        <span class="wallet-balance-ada">@_connectedWallet.BalanceAda</span>
+                                        <span class="wallet-balance-decimal">.</span>
+                                        <span class="wallet-balance-lovelace">@_connectedWallet.BalanceRemainder</span>
+                                        <span class="wallet-balance-currency">@_connectedWallet.CoinCurrency</span>
+                                    </div>
+                                </div>
+                                <div class="wallet-balance-row wallet-unavailable">
+                                    <span>Unavailable</span>
+                                    <div class="wallet-adaamount-container">
+                                        <span class="wallet-balance-ada">@_connectedWallet.TokenPreservationAda</span>
+                                        <span class="wallet-balance-decimal">.</span>
+                                        <span class="wallet-balance-lovelace">@_connectedWallet.TokenPreservationRemainder</span>
+                                        <span class="wallet-balance-currency">@_connectedWallet.CoinCurrency</span>
+                                    </div>
+                                </div>
                                 <div>Collectibles @_connectedWallet.TokenCount</div>
                             </div>
                             <div class="wallet-button" @onclick="@(async e => await DisconnectWalletClickAsync(e))">Disconnect</div>
@@ -131,6 +145,25 @@
         return;
     }
 
+    private async ValueTask RefreshConnectedWallet()
+    {
+        var balance = await GetBalance();
+        if (balance != null)
+        {
+            _connectedWallet.TokenCount = 0;
+            _connectedWallet.TokenPreservation = 0;
+            if (balance.MultiAsset != null && balance.MultiAsset.Count > 0)
+            {
+                _connectedWallet.TokenPreservation = balance.MultiAsset.CalculateMinUtxoLovelace();
+                _connectedWallet.TokenCount = balance.MultiAsset.Sum(x => x.Value.Token.Keys.Count);
+            }
+            _connectedWallet.Balance = balance.Coin - _connectedWallet.TokenPreservation;
+            Console.WriteLine("Refresh - Balance: " + _connectedWallet.Balance);
+            Console.WriteLine("Refresh - Token Use: " + _connectedWallet.TokenPreservation);
+        }
+        _connectedWallet.Network = await GetNetworkId();
+    }
+
     private async ValueTask<bool> ConnectWalletClickAsync(MouseEventArgs e, string walletKey)
     {
         try
@@ -139,18 +172,7 @@
             if (result)
             {
                 _connectedWallet = _wallets.First(x => x.Key == walletKey);
-                var balance = await GetBalance();
-                if (balance != null)
-                {
-                    _connectedWallet.TokenCount = 0;
-                    _connectedWallet.TokenPreservation = 0;
-                    if (balance.MultiAsset != null && balance.MultiAsset.Count > 0)
-                    {
-                        _connectedWallet.TokenPreservation = balance.MultiAsset.CalculateMinUtxoLovelace();
-                        _connectedWallet.TokenCount = balance.MultiAsset.Sum(x => x.Value.Token.Keys.Count);
-                    }
-                    _connectedWallet.Balance = balance.Coin - _connectedWallet.TokenPreservation;
-                }
+                await RefreshConnectedWallet();
                 _wallets.First(x => x.Key == walletKey).Connected = true;
                 if (AutoCloseOnConnect)
                 {
@@ -209,6 +231,10 @@
 
     public void ShowConnectWalletDialog()
     {
+        if (Connected)
+        {
+            RefreshConnectedWallet();
+        }
         _showPopup = true;
         StateHasChanged();
     }
@@ -219,10 +245,11 @@
         StateHasChanged();
     }
 
-    public async ValueTask<int> GetNetworkId()
+    public async ValueTask<NetworkId> GetNetworkId()
     {
         CheckInitializedAndConnected();
-        return await _walletConnectorJs.GetNetworkId();
+        var networkId = await _walletConnectorJs.GetNetworkId();
+        return (NetworkId)networkId;
     }
 
     public async ValueTask<TransactionUnspentOutput[]> GetUtxos(TransactionOutputValue? requiredOutput = null, Paginate? paginate = null)
