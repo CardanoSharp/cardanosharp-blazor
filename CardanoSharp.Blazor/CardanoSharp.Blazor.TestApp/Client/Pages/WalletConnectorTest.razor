@@ -164,6 +164,7 @@
                     {
                         DisplayResult.Add($"INPUT # {item.Input.TransactionId.ToStringHex()}");
                         DisplayResult.Add($"INPUT IDX {item.Input.TransactionIndex}");
+                        DisplayResult.Add($"OUTPUT ADDR {item.Output.Address.ToStringHex()}");
                         DisplayResult.Add($"OUTPUT COIN {item.Output.Value.Coin}");
                     }
                 }

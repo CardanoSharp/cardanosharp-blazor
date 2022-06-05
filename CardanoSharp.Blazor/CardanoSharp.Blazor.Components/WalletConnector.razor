@@ -299,6 +299,7 @@
         var utxoList = new List<TransactionUnspentOutput>();
         foreach (var utxoCbor in utxoCbors)
         {
+            Console.WriteLine($"UTXO CBOR: {utxoCbor}");
             utxoList.Add(utxoCbor.HexToByteArray().DeserializeTransactionUnspentOutput());
         }
         return utxoList.ToArray();
