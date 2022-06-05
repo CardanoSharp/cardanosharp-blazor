@@ -1,10 +1,10 @@
 ﻿@page "/walletconnectortest"
-@using CardanoSharp.Blazor.Components
+@using CardanoSharp.Blazor.Components;
 @using CardanoSharp.Blazor.Components.Models;
+@using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Blazor.TestApp.Shared;
 @using CardanoSharp.Wallet.Models.Transactions
 @using CardanoSharp.Wallet.Extensions;
-@using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Wallet.Extensions.Models.Transactions;
 @using CardanoSharp.Wallet.Encoding;
 
@@ -14,7 +14,8 @@
 
 <h1>Wallet Connector Test</h1>
 
-<WalletConnector @ref="myWebWallets" Layout="WalletConnectorLayout.List"></WalletConnector>
+<WalletConnector @ref="myWebWallets">
+</WalletConnector>
 
 <div>
     <span>RESULTS</span>
