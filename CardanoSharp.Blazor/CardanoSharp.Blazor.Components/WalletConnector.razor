@@ -70,6 +70,9 @@
                     {
                         @if (Layout == WalletConnectorLayout.List)
                         {
+                            <div class="wallet-choose-header">
+                                @Header
+                            </div>
                             @foreach (var extension in _wallets)
                             {
                             <div class="wallet-item">
@@ -88,6 +91,9 @@
                         }
                         else
                         {
+                            <div class="wallet-choose-header">
+                                @Header
+                            </div>
                             <div class="wallet-card-container">
                             @foreach (var extension in _wallets)
                             {
@@ -121,6 +127,8 @@
 </div>
 
 @code {
+    [Parameter]
+    public string Header { get; set; } = "Choose Your Wallet";
     [Parameter]
     public bool AutoCloseOnConnect { get; set; }
     [Parameter]

@@ -37,7 +37,7 @@
 }
 
 .wallet-card-title {
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
 .wallet-name {
@@ -203,4 +203,10 @@
 
 .wallet-network {
     font-size: 0.6em;
+}
+
+.wallet-choose-header {
+    justify-content: center;
+    display: inline-flex;
+    font-size: 1.5em;
 }
