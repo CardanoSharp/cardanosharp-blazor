@@ -6,6 +6,8 @@
 @using CardanoSharp.Wallet.Extensions;
 @using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Wallet.Extensions.Models.Transactions;
+@using CardanoSharp.Wallet.Encoding;
+
 @inject HttpClient Http
 
 <PageTitle>Wallet Connector Test</PageTitle>
@@ -25,7 +27,7 @@
 </div>
 <hr/>
 <div>
-    <button @onclick="@(async e => await TestGetNetworkId())">Get NetworkId</button>
+    <button @onclick="@(async e => await TestGetNetwork())">Get Network</button>
 </div>
 <hr/>
 <div>
@@ -110,15 +112,15 @@
 
     private List<string> DisplayResult = new List<string>();
 
-    private async ValueTask TestGetNetworkId()
+    private async ValueTask TestGetNetwork()
     {
         if (myWebWallets != null && myWebWallets.Initialized)
         {
             if (myWebWallets.Connected)
             {
-                var result = await myWebWallets.GetNetworkId();
+                var result = await myWebWallets.GetNetworkType();
                 DisplayResult.Clear();
-                DisplayResult.Add($"Network ID: {result}");
+                DisplayResult.Add($"Network Type: {result}");
             }
             else
             {
@@ -247,7 +249,13 @@
                 var result = await myWebWallets.GetUsedAddresses();
                 DisplayResult.Clear();
                 DisplayResult.Add($"Used Addresses ({result.Length}):");
-                DisplayResult.AddRange(result);
+
+                foreach (var addr in result)
+                {
+                    DisplayResult.Add($"Addr-Bech32: {addr.ToString()}");
+                    DisplayResult.Add($"Addr-prefix: {addr.Prefix}");
+                    DisplayResult.Add($"Addr-network: {addr.NetworkType}");
+                }
             }
             else
             {
@@ -265,7 +273,13 @@
                 var result = await myWebWallets.GetUnusedAddresses();
                 DisplayResult.Clear();
                 DisplayResult.Add($"Unused Addresses ({result.Length}):");
-                DisplayResult.AddRange(result);
+
+                foreach (var addr in result)
+                {
+                    DisplayResult.Add($"Addr-Bech32: {addr.ToString()}");
+                    DisplayResult.Add($"Addr-prefix: {addr.Prefix}");
+                    DisplayResult.Add($"Addr-network: {addr.NetworkType}");
+                }
             }
             else
             {
@@ -280,10 +294,13 @@
         {
             if (myWebWallets.Connected)
             {
-                var result = await myWebWallets.GetChangeAddress();
+                var addr = await myWebWallets.GetChangeAddress();
                 DisplayResult.Clear();
                 DisplayResult.Add($"Change Address:");
-                DisplayResult.Add(result);
+
+                DisplayResult.Add($"Addr-Bech32: {addr.ToString()}");
+                DisplayResult.Add($"Addr-prefix: {addr.Prefix}");
+                DisplayResult.Add($"Addr-network: {addr.NetworkType}");
             }
             else
             {
@@ -301,7 +318,13 @@
                 var result = await myWebWallets.GetRewardAddresses();
                 DisplayResult.Clear();
                 DisplayResult.Add($"Reward Addresses ({result.Length}):");
-                DisplayResult.AddRange(result);
+
+                foreach (var addr in result)
+                {
+                    DisplayResult.Add($"Addr-Bech32: {addr.ToString()}");
+                    DisplayResult.Add($"Addr-prefix: {addr.Prefix}");
+                    DisplayResult.Add($"Addr-network: {addr.NetworkType}");
+                }
             }
             else
             {

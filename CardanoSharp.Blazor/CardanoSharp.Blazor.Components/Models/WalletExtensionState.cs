@@ -29,16 +29,20 @@ namespace CardanoSharp.Blazor.Components.Models
                 return (Balance % 1000000).ToString("D6");
             }
         }
-        public NetworkId Network { get; set; }
+        public NetworkType Network { get; set; }
         public string CoinCurrency
         {
             get
             {
-                if (Network == NetworkId.Mainnet)
+                if (Network == NetworkType.Mainnet)
                 {
                     return "₳";
                 }
-                return "t₳";
+                else if (Network == NetworkType.Testnet)
+                {
+                    return "t₳";
+                }
+                return "";
             }
         }
 
