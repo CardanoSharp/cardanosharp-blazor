@@ -7,6 +7,7 @@
 @using CardanoSharp.Wallet.Extensions;
 @using CardanoSharp.Wallet.Enums;
 @using CardanoSharp.Wallet.Models.Addresses;
+@using CardanoSharp.Blazor.Components.Utils;
 
 @inject IJSRuntime JS
 
@@ -292,7 +293,7 @@
     {
         CheckInitializedAndConnected();
         var networkId = await _walletConnectorJs.GetNetworkId();
-        return GetNetworkType(networkId);
+        return ComponentUtils.GetNetworkType(networkId);
     }
 
     public async ValueTask<TransactionUnspentOutput[]> GetUtxos(TransactionOutputValue? requiredOutput = null, Paginate? paginate = null)
@@ -338,42 +339,6 @@
         return outputValue;
     }
 
-    private NetworkType GetNetworkType(int networkId)
-    {
-        switch (networkId)
-        {
-            case 0: return NetworkType.Testnet;
-            case 1: return NetworkType.Mainnet;
-            default: return NetworkType.Unknown;
-        }
-    }
-
-    private string getPrefixHeader(AddressType addressType)
-    {
-        switch (addressType)
-        {
-            case AddressType.Reward: return "stake";
-            case AddressType.Base: return "addr";
-            case AddressType.Enterprise: return "addr";
-            default: throw new Exception("Unknown address type");
-        }
-    }
-
-    private string getPrefixTail(NetworkType networkType)
-    {
-        switch (networkType)
-        {
-            case NetworkType.Testnet: return "_test";
-            case NetworkType.Mainnet: return "";
-            default: throw new Exception("Unknown address type");
-        }
-    }
-
-    private string getPrefix(AddressType addressType, NetworkType networkType)
-    {
-        return $"{getPrefixHeader(addressType)}{getPrefixTail(networkType)}";
-    }
-
     public async ValueTask<Address[]> GetUsedAddresses(Paginate? paginate = null)
     {
         CheckInitializedAndConnected();
@@ -381,7 +346,7 @@
         var response = new List<Address>();
         foreach (var address in addresses)
         {
-            response.Add(new Address(getPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
+            response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
         }
         return response.ToArray();
     }
@@ -393,7 +358,7 @@
         var response = new List<Address>();
         foreach (var address in addresses)
         {
-            response.Add(new Address(getPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
+            response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
         }
         return response.ToArray();
     }
@@ -402,7 +367,7 @@
     {
         CheckInitializedAndConnected();
         var address = await _walletConnectorJs.GetChangeAddress();
-        return new Address(getPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray());
+        return new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray());
     }
 
     public async ValueTask<Address[]> GetRewardAddresses()
@@ -412,7 +377,7 @@
         var response = new List<Address>();
         foreach (var address in addresses)
         {
-            response.Add(new Address(getPrefix(AddressType.Reward, _connectedWallet.Network), address.HexToByteArray()));
+            response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Reward, _connectedWallet.Network), address.HexToByteArray()));
         }
         return response.ToArray();
     }
