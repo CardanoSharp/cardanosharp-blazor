@@ -200,3 +200,7 @@
 .gc {
     display: grid;
 }
+
+.wallet-network {
+    font-size: 0.6em;
+}
