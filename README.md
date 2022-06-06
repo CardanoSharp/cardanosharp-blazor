@@ -17,42 +17,42 @@ WalletConnector has the follow parameters that can be set as required:
 
 ### Usage
 ```
-@using CardanoSharp.Blazor.Components;<br/>
-@using CardanoSharp.Blazor.Components.Models;<br/>
-@using CardanoSharp.Blazor.Components.Enums;<br/>
-<br/>
-&lt;WalletConnector<br/>
-&nbsp;&nbsp;@ref="myWebWallets" <br/>
-&nbsp;&nbsp;Header="Please choose a wallet"<br/>
-&nbsp;&nbsp;AutoCloseOnConnect="false"<br/>
-&nbsp;&nbsp;AutoCloseOnDisconnect="true"<br/>
-&nbsp;&nbsp;Layout="WalletConnectorLayout.List" <br/>
-&nbsp;&nbsp;SupportedExtensions="<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;@(new List<WalletExtension>()<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new WalletExtension() { <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key = "eternl", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name = "Eternl", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Icon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAG........",<br/> 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Url = "https://eternl.io"<br/> 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new WalletExtension() { <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Key = "gerowallet", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name = "Gero", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Icon = "https://gerowallet.io/assets/img/logo2.ico", <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Url = "https://gerowallet.io" <br/>
-&nbsp;&nbsp;&nbsp;&nbsp;},<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;})<br/>
-&nbsp;&nbsp;"&gt;<br/>
-&lt;/WalletConnector&gt;
+@using CardanoSharp.Blazor.Components;
+@using CardanoSharp.Blazor.Components.Models;
+@using CardanoSharp.Blazor.Components.Enums;
 
-@code { <br/>
-&nbsp;&nbsp;if (myWebWallets != null && myWebWallets.Initialized)<br/>
-&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;if (myWebWallets.Connected)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;{<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var result = await myWebWallets.GetBalance();<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
-&nbsp;&nbsp;}<br/>
-}<br/>
+<WalletConnector
+  @ref="myWebWallets" 
+  Header="Please choose a wallet"
+  AutoCloseOnConnect="false"
+  AutoCloseOnDisconnect="true"
+  Layout="WalletConnectorLayout.List" 
+  SupportedExtensions="
+    @(new List<WalletExtension>()
+    {
+      new WalletExtension() { 
+        Key = "eternl", 
+        Name = "Eternl", 
+        Icon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAAG........", 
+        Url = "https://eternl.io" 
+      },
+      new WalletExtension() { 
+        Key = "gerowallet", 
+        Name = "Gero", 
+        Icon = "https://gerowallet.io/assets/img/logo2.ico", 
+        Url = "https://gerowallet.io" 
+    },
+    })
+  ">
+</WalletConnector>
+
+@code { 
+  if (myWebWallets != null && myWebWallets.Initialized)
+  {
+    if (myWebWallets.Connected)
+    {
+      var result = await myWebWallets.GetBalance();
+    }
+  }
+}
 ```
