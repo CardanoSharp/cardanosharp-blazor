@@ -302,7 +302,7 @@
         return ComponentUtils.GetNetworkType(networkId);
     }
 
-    public async ValueTask<TransactionUnspentOutput[]> GetUtxos(TransactionOutputValue? requiredOutput = null, Paginate? paginate = null)
+    public async ValueTask<Utxo[]> GetUtxos(TransactionOutputValue? requiredOutput = null, Paginate? paginate = null)
     {
         CheckInitializedAndConnected();
         string? amountCbor = null;
@@ -311,23 +311,23 @@
             amountCbor = requiredOutput.Serialize().ToStringHex();
         }
         var utxoCbors = await _walletConnectorJs.GetUtxos(amountCbor, paginate);
-        var utxoList = new List<TransactionUnspentOutput>();
+        var utxoList = new List<Utxo>();
         foreach (var utxoCbor in utxoCbors)
         {
             Console.WriteLine($"UTXO CBOR: {utxoCbor}");
-            utxoList.Add(utxoCbor.HexToByteArray().DeserializeTransactionUnspentOutput());
+            utxoList.Add(utxoCbor.HexToByteArray().DeserializeUtxo());
         }
         return utxoList.ToArray();
     }
 
-    public async ValueTask<TransactionUnspentOutput[]> GetCollateral(CollateralParams collateralParams)
+    public async ValueTask<Utxo[]> GetCollateral(CollateralParams collateralParams)
     {
         CheckInitializedAndConnected();
         var utxoCbors = await _walletConnectorJs.GetCollateral(collateralParams);
-        var utxoList = new List<TransactionUnspentOutput>();
+        var utxoList = new List<Utxo>();
         foreach (var utxoCbor in utxoCbors)
         {
-            utxoList.Add(utxoCbor.HexToByteArray().DeserializeTransactionUnspentOutput());
+            utxoList.Add(utxoCbor.HexToByteArray().DeserializeUtxo());
         }
         return utxoList.ToArray();
     }

@@ -148,7 +148,7 @@
         {
             if (myWebWallets.Connected)
             {
-                TransactionUnspentOutput[]? result = null;
+                Utxo[]? result = null;
                 if (GetUtxosAmount == 0)
                 {
                     result = await myWebWallets.GetUtxos();
@@ -175,10 +175,15 @@
                     DisplayResult.Add($"UTXOs ({result.Length}):");
                     foreach (var item in result)
                     {
-                        DisplayResult.Add($"INPUT # {item.Input.TransactionId.ToStringHex()}");
-                        DisplayResult.Add($"INPUT IDX {item.Input.TransactionIndex}");
-                        DisplayResult.Add($"OUTPUT ADDR {item.Output.Address.ToStringHex()}");
-                        DisplayResult.Add($"OUTPUT COIN {item.Output.Value.Coin}");
+                        DisplayResult.Add($"INPUT # {item.TxHash}");
+                        DisplayResult.Add($"INPUT IDX {item.TxIndex}");
+                        DisplayResult.Add($"OUTPUT ADDR {item.OutputAddress}");
+                        DisplayResult.Add($"OUTPUT COIN {item.Value}");
+                        if (item.AssetList != null && item.AssetList.Count() > 0)
+                        {
+                            var assets = item.AssetList.Sum(x => Convert.ToDecimal(x.Quantity));
+                            DisplayResult.Add($"OUTPUT TOKENS {assets}");
+                        }
                     }
                 }
                 else
@@ -204,12 +209,17 @@
                 if (result != null)
                 {
                     DisplayResult.Add($"Collateral ({result.Length}):");
-                    foreach (var utxo in result)
+                    foreach (var item in result)
                     {
-                        DisplayResult.Add($"UTXO.InputHash: {utxo.Input?.TransactionId.ToStringHex()}");
-                        DisplayResult.Add($"UTXO.InputIndex: {utxo.Input?.TransactionIndex}");
-                        DisplayResult.Add($"UTXO.OutputAddr: {utxo.Output?.Address.ToStringHex()}");
-                        DisplayResult.Add($"UTXO.InputHash: {utxo.Output?.Value.Coin}");
+                        DisplayResult.Add($"INPUT # {item.TxHash}");
+                        DisplayResult.Add($"INPUT IDX {item.TxIndex}");
+                        DisplayResult.Add($"OUTPUT ADDR {item.OutputAddress}");
+                        DisplayResult.Add($"OUTPUT COIN {item.Value}");
+                        if (item.AssetList != null && item.AssetList.Count() > 0)
+                        {
+                            var assets = item.AssetList.Sum(x => Convert.ToDecimal(x.Quantity));
+                            DisplayResult.Add($"OUTPUT TOKENS {assets}");
+                        }
                     }
                 }
                 else
