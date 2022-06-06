@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CardanoSharp.Wallet.New\CardanoSharp.Wallet.New.csproj" />
     <ProjectReference Include="..\Client\CardanoSharp.Blazor.TestApp.Client.csproj" />
     <ProjectReference Include="..\Shared\CardanoSharp.Blazor.TestApp.Shared.csproj" />
   </ItemGroup>

@@ -4,15 +4,15 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
-    <FileVersion>1.0.1</FileVersion>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/CardanoSharp/cardanosharp-blazor</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Description>CardanoSharp.Blazor.Components is a component library for C# devs to easily get started with developing dApps for Cardano.</Description>
-    <Authors>paulcowan</Authors>
+    <Authors>CardanoSharp</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>$(AssemblyVersion)</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,10 +30,6 @@
   <ItemGroup>
     <PackageReference Include="CardanoSharp.Wallet" Version="2.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CardanoSharp.Wallet.New\CardanoSharp.Wallet.New.csproj" />
   </ItemGroup>
 
 </Project>
