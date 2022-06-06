@@ -16,7 +16,7 @@ WalletConnector has the follow parameters that can be set as required:
 5. SupportedExtensions [Eternl,Gero,Nami] - If you want to override the current known list of wallet browser extensions, and their applicable attributes (name, icon etc)
 
 ### Usage
-
+```
 @using CardanoSharp.Blazor.Components;<br/>
 @using CardanoSharp.Blazor.Components.Models;<br/>
 @using CardanoSharp.Blazor.Components.Enums;<br/>
@@ -55,3 +55,4 @@ WalletConnector has the follow parameters that can be set as required:
 &nbsp;&nbsp;&nbsp;&nbsp;}<br/>
 &nbsp;&nbsp;}<br/>
 }<br/>
+```
