@@ -158,6 +158,10 @@
     };
     [Parameter]
     public WalletConnectorLayout Layout { get; set; } = WalletConnectorLayout.Card;
+    [Parameter]
+    public EventCallback OnConnect { get; set; }
+    [Parameter]
+    public EventCallback OnDisconnect { get; set; }
 
     private List<WalletExtensionState>? _wallets = new List<WalletExtensionState>();
     private DotNetObjectReference<WalletConnector>? _selfReference;
@@ -222,6 +226,7 @@
                     _showPopup = false;
                 }
             }
+            await OnConnect.InvokeAsync();
             return result;
         }
         //suppress all errors as it could be valid user refusal 
@@ -257,6 +262,7 @@
         {
             _showPopup = false;
         }
+        await OnDisconnect.InvokeAsync();
         return;
     }
 

@@ -14,7 +14,7 @@
 
 <h1>Wallet Connector Test</h1>
 
-<WalletConnector @ref="myWebWallets">
+<WalletConnector @ref="myWebWallets" OnConnect="WalletConnected" OnDisconnect="WalletDisconnected">
 </WalletConnector>
 
 <div>
@@ -112,6 +112,18 @@
     private int GetUtxosPaginateLimit = -1; 
 
     private List<string> DisplayResult = new List<string>();
+
+    private void WalletConnected()
+    {
+        DisplayResult.Clear();
+        DisplayResult.Add($"Wallet connected event.");
+    }
+
+    private void WalletDisconnected()
+    {
+        DisplayResult.Clear();
+        DisplayResult.Add($"Wallet disconnected event.");
+    }
 
     private async ValueTask TestGetNetwork()
     {
