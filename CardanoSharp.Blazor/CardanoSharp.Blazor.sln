@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardanoSharp.Blazor.Components", "CardanoSharp.Blazor.Components\CardanoSharp.Blazor.Components.csproj", "{6339F995-518D-48B1-9AF2-31A1CE8149F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardanoSharp.Blazor.Components", "CardanoSharp.Blazor.Components\CardanoSharp.Blazor.Components.csproj", "{6339F995-518D-48B1-9AF2-31A1CE8149F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardanoSharp.Wallet.New", "CardanoSharp.Wallet.New\CardanoSharp.Wallet.New.csproj", "{ACA8A01A-6A34-4569-9DA0-9BEF4F0A6E80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardanoSharp.Blazor.TestApp.Server", "CardanoSharp.Blazor.TestApp\Server\CardanoSharp.Blazor.TestApp.Server.csproj", "{E32F6A52-3F92-44F9-BB57-6440F7A26972}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardanoSharp.Blazor.TestApp.Server", "CardanoSharp.Blazor.TestApp\Server\CardanoSharp.Blazor.TestApp.Server.csproj", "{E32F6A52-3F92-44F9-BB57-6440F7A26972}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardanoSharp.Blazor.TestApp.Client", "CardanoSharp.Blazor.TestApp\Client\CardanoSharp.Blazor.TestApp.Client.csproj", "{5CDFE84F-7B90-4A1D-B53B-A353B6BD661F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardanoSharp.Blazor.TestApp.Client", "CardanoSharp.Blazor.TestApp\Client\CardanoSharp.Blazor.TestApp.Client.csproj", "{5CDFE84F-7B90-4A1D-B53B-A353B6BD661F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardanoSharp.Blazor.TestApp.Shared", "CardanoSharp.Blazor.TestApp\Shared\CardanoSharp.Blazor.TestApp.Shared.csproj", "{14DACF54-FECF-4132-AD80-3D63606FCF5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardanoSharp.Blazor.TestApp.Shared", "CardanoSharp.Blazor.TestApp\Shared\CardanoSharp.Blazor.TestApp.Shared.csproj", "{14DACF54-FECF-4132-AD80-3D63606FCF5F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApp", "TestApp", "{20950308-B178-46E9-A421-395DA7032231}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{6339F995-518D-48B1-9AF2-31A1CE8149F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6339F995-518D-48B1-9AF2-31A1CE8149F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6339F995-518D-48B1-9AF2-31A1CE8149F3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACA8A01A-6A34-4569-9DA0-9BEF4F0A6E80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACA8A01A-6A34-4569-9DA0-9BEF4F0A6E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACA8A01A-6A34-4569-9DA0-9BEF4F0A6E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACA8A01A-6A34-4569-9DA0-9BEF4F0A6E80}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E32F6A52-3F92-44F9-BB57-6440F7A26972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E32F6A52-3F92-44F9-BB57-6440F7A26972}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E32F6A52-3F92-44F9-BB57-6440F7A26972}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,6 +38,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E32F6A52-3F92-44F9-BB57-6440F7A26972} = {20950308-B178-46E9-A421-395DA7032231}
+		{5CDFE84F-7B90-4A1D-B53B-A353B6BD661F} = {20950308-B178-46E9-A421-395DA7032231}
+		{14DACF54-FECF-4132-AD80-3D63606FCF5F} = {20950308-B178-46E9-A421-395DA7032231}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D4EDDA14-D909-485B-8641-CC519E60769D}
