@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <AssemblyVersion></AssemblyVersion>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/CardanoSharp/cardanosharp-blazor</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -12,7 +12,7 @@
     <Authors>CardanoSharp</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>$(AssemblyVersion)</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
