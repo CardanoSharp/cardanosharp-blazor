@@ -8,6 +8,7 @@
 @using CardanoSharp.Wallet.Enums;
 @using CardanoSharp.Wallet.Models.Addresses;
 @using CardanoSharp.Blazor.Components.Utils;
+@using PeterO.Cbor2;
 
 @inject IJSRuntime JS
 
@@ -129,6 +130,8 @@
 
 @code {
     [Parameter]
+    public bool OutputDebug { get; set; }
+    [Parameter]
     public string Header { get; set; } = "Choose Your Wallet";
     [Parameter]
     public bool AutoCloseOnConnect { get; set; }
@@ -191,6 +194,14 @@
         return;
     }
 
+    private void Debug(string text)
+    {
+        if (OutputDebug)
+        {
+            Console.WriteLine(text);
+        }
+    }
+
     private async ValueTask RefreshConnectedWallet()
     {
         var balance = await GetBalance();
@@ -204,8 +215,6 @@
                 _connectedWallet.TokenCount = balance.MultiAsset.Sum(x => x.Value.Token.Keys.Count);
             }
             _connectedWallet.Balance = balance.Coin - _connectedWallet.TokenPreservation;
-            Console.WriteLine("Refresh - Balance: " + _connectedWallet.Balance);
-            Console.WriteLine("Refresh - Token Use: " + _connectedWallet.TokenPreservation);
         }
         _connectedWallet.Network = await GetNetworkType();
         StateHasChanged();
@@ -233,19 +242,19 @@
         //(cant get enough detail out of gero wallet to ensure specific handling)
         catch (ErrorCodeException ecex)
         {
-            Console.WriteLine("Caught error code exception: " + ecex.Code + " - " + ecex.Info);
+            Debug("Caught error code exception: " + ecex.Code + " - " + ecex.Info);
         }
         catch (PaginateException pex)
         {
-            Console.WriteLine("Caught paginate exception: " + pex.MaxSize);
+            Debug("Caught paginate exception: " + pex.MaxSize);
         }
         catch (WebWalletException wex)
         {
-            Console.WriteLine("Caught web wallet exception: " + wex.Data.Keys.ToString());
+            Debug("Caught web wallet exception: " + wex.Data.Keys.ToString());
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Caught error code exception: " + ex.Message);
+            Debug("Caught error code exception: " + ex.Message);
         }
         return false;
     }
@@ -314,7 +323,7 @@
         var utxoList = new List<Utxo>();
         foreach (var utxoCbor in utxoCbors)
         {
-            Console.WriteLine($"UTXO CBOR: {utxoCbor}");
+            Debug($"UTXO CBOR: {utxoCbor}");
             utxoList.Add(utxoCbor.HexToByteArray().DeserializeUtxo());
         }
         return utxoList.ToArray();
@@ -327,6 +336,7 @@
         var utxoList = new List<Utxo>();
         foreach (var utxoCbor in utxoCbors)
         {
+            Debug($"COLLATERAL CBOR: {utxoCbor}");
             utxoList.Add(utxoCbor.HexToByteArray().DeserializeUtxo());
         }
         return utxoList.ToArray();
@@ -336,11 +346,15 @@
     {
         CheckInitializedAndConnected();
         var result = await _walletConnectorJs.GetBalance();
-        Console.WriteLine("GetBalance CBOR: " + result);
-        if (result == "00")
+        Debug($"BALANCE CBOR: {result}");
+        var cborObj = CBORObject.DecodeFromBytes(result.HexToByteArray());
+        if (cborObj.Type == CBORType.Integer)
         {
-            return new TransactionOutputValue();
+            var number = cborObj.AsNumber();
+            var coin = number.ToUInt64Checked();
+            return new TransactionOutputValue() { Coin = coin };
         }
+
         var outputValue = result.HexToByteArray().DeserializeTransactionOutputValue();
         return outputValue;
     }
@@ -352,6 +366,7 @@
         var response = new List<Address>();
         foreach (var address in addresses)
         {
+            Debug($"USED ADDRESS: {address}");
             response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
         }
         return response.ToArray();
@@ -364,6 +379,7 @@
         var response = new List<Address>();
         foreach (var address in addresses)
         {
+            Debug($"UNUSED ADDRESS: {address}");
             response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
         }
         return response.ToArray();
@@ -373,6 +389,7 @@
     {
         CheckInitializedAndConnected();
         var address = await _walletConnectorJs.GetChangeAddress();
+        Debug($"CHANGE ADDRESS: {address}");
         return new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray());
     }
 
@@ -383,6 +400,7 @@
         var response = new List<Address>();
         foreach (var address in addresses)
         {
+            Debug($"REWARD ADDRESS: {address}");
             response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Reward, _connectedWallet.Network), address.HexToByteArray()));
         }
         return response.ToArray();
@@ -391,8 +409,8 @@
     public async ValueTask<string> SignTx(Transaction tx, bool partialSign = false)
     {
         CheckInitializedAndConnected();
-        //TODO: write function to check tx for unsigned witnesses that might trigger cryptography during serialization
         var txCbor = tx.Serialize().ToStringHex();
+        Debug($"TX CBOR: {txCbor}");
         return await _walletConnectorJs.SignTx(txCbor, partialSign);
     }
 
@@ -407,6 +425,7 @@
         CheckInitializedAndConnected();
         //TODO: write function to check tx for unsigned witnesses that might trigger cryptography during serialization
         var txCbor = tx.Serialize().ToStringHex();
+        Debug($"TX CBOR: {txCbor}");
         return await _walletConnectorJs.SubmitTx(txCbor);
     }
 }
