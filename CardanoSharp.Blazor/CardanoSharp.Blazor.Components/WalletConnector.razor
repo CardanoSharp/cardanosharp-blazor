@@ -8,6 +8,7 @@
 @using CardanoSharp.Wallet.Enums;
 @using CardanoSharp.Wallet.Models.Addresses;
 @using CardanoSharp.Blazor.Components.Utils;
+@using PeterO.Cbor2;
 
 @inject IJSRuntime JS
 
@@ -336,11 +337,14 @@
     {
         CheckInitializedAndConnected();
         var result = await _walletConnectorJs.GetBalance();
-        Console.WriteLine("GetBalance CBOR: " + result);
-        if (result == "00")
+        var cborObj = CBORObject.DecodeFromBytes(result.HexToByteArray());
+        if (cborObj.Type == CBORType.Integer)
         {
-            return new TransactionOutputValue();
+            var number = cborObj.AsNumber();
+            var coin = number.ToUInt64Checked();
+            return new TransactionOutputValue() { Coin = coin };
         }
+
         var outputValue = result.HexToByteArray().DeserializeTransactionOutputValue();
         return outputValue;
     }
