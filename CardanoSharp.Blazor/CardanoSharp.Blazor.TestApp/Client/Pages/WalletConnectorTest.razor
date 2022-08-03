@@ -98,6 +98,14 @@
 <div>
     <button @onclick="@(async e => await TestSubmitTx())">Submit Tx</button>
 </div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestForceConnect())">Force Connect</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestForceDisconnect())">Force Disconnect</button>
+</div>
 
 @code {
     private WalletConnector? myWebWallets;
@@ -355,6 +363,16 @@
                 myWebWallets.ShowConnectWalletDialog();
             }
         }
+    }
+
+    private async ValueTask TestForceConnect()
+    {
+        await myWebWallets!.ConnectWalletAsync("nami").ConfigureAwait(false);
+    }
+
+    private async ValueTask TestForceDisconnect()
+    {
+        await myWebWallets!.DisconnectWalletAsync().ConfigureAwait(false);
     }
 
     private async ValueTask TestSignTx()
