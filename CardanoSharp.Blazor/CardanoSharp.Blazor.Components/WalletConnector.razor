@@ -65,7 +65,7 @@
                                     <span>Collectibles @_connectedWallet.TokenCount</span>
                                 </div>
                             </div>
-                            <div class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</div>
+                            <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
                         </div>
                     }
                     else
@@ -82,7 +82,7 @@
                                 <span class="wallet-name">@extension.Name Wallet</span>
                                 @if (extension.Installed)
                                 {
-                                    <div class="wallet-button" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</div>
+                                    <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
                                 }
                                 else
                                 {
@@ -104,7 +104,7 @@
                                     <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name" />
                                     @if (extension.Installed)
                                     {
-                                        <div class="wallet-button" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</div>
+                                        <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
                                     }
                                     else
                                     {
@@ -164,7 +164,11 @@
     [Parameter]
     public WalletConnectorLayout Layout { get; set; } = WalletConnectorLayout.Card;
     [Parameter]
+    public EventCallback OnConnectStart { get; set; }
+    [Parameter]
     public EventCallback OnConnect { get; set; }
+    [Parameter]
+    public EventCallback<Exception> OnConnectError { get; set; }
     [Parameter]
     public EventCallback OnDisconnect { get; set; }
 
@@ -172,6 +176,7 @@
     private DotNetObjectReference<WalletConnector>? _selfReference;
     private WalletExtensionState? _connectedWallet;
     private WalletConnectorJsInterop? _walletConnectorJs;
+    private bool _connecting;
     private bool _showPopup;
     public bool Initialized { get; private set; }
     public bool Connected
@@ -235,6 +240,12 @@
     {
         try
         {
+            if (!suppressEvent)
+                OnConnectStart.InvokeAsync().ConfigureAwait(false);
+
+            _connecting = true;
+            StateHasChanged();
+
             var result = await _walletConnectorJs!.ConnectWallet(walletKey);
             if (result)
             {
@@ -247,7 +258,7 @@
                 }
             }
             if (!suppressEvent)
-                await OnConnect.InvokeAsync();
+                OnConnect.InvokeAsync();
             return result;
         }
         //suppress all errors as it could be valid user refusal 
@@ -255,18 +266,27 @@
         catch (ErrorCodeException ecex)
         {
             Debug("Caught error code exception: " + ecex.Code + " - " + ecex.Info);
+            OnConnectError.InvokeAsync(ecex);
         }
         catch (PaginateException pex)
         {
             Debug("Caught paginate exception: " + pex.MaxSize);
+            OnConnectError.InvokeAsync(pex);
         }
         catch (WebWalletException wex)
         {
             Debug("Caught web wallet exception: " + wex.Data.Keys.ToString());
+            OnConnectError.InvokeAsync(wex);
         }
         catch (Exception ex)
         {
-            Debug("Caught error code exception: " + ex.Message);
+            Debug("Caught exception: " + ex.Message);
+            OnConnectError.InvokeAsync(ex);
+        }
+        finally
+        {
+            _connecting = false;
+            StateHasChanged();
         }
         return false;
     }
