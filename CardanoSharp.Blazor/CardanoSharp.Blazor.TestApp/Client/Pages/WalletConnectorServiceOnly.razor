@@ -1,0 +1,155 @@
+﻿@page "/walletconnectortest3"
+@using CardanoSharp.Blazor.Components;
+@using CardanoSharp.Blazor.Components.Models;
+@using CardanoSharp.Wallet.Extensions
+@using CardanoSharp.Wallet.Models.Transactions
+@using System.Text
+@using CardanoSharp.Blazor.Components.Services
+
+@inject WalletConnectorService WalletConnectorService
+
+<PageTitle>Wallet Connector Test</PageTitle>
+
+<h1>Wallet Connector Test</h1>
+<p>This page exemplifies using the wallet connector without a component (the user calls the service directly)</p>
+
+@if (WalletConnectorService.ConnectedWallet is not null)
+{
+    <span>Connected wallet: <img style="width: 18px;" src="@WalletConnectorService.ConnectedWallet.Icon" title="@WalletConnectorService.ConnectedWallet.Name"/></span>
+    <span>@WalletConnectorService.ConnectedWallet.Name - @WalletConnectorService.ConnectedWallet.BalanceAda₳</span>
+}
+else
+{
+    <ul>
+        @foreach (WalletExtensionState wallet in Wallets)
+        {
+            <li style="margin-left: 15px">
+                @wallet.Name <img style="width: 18px;" src="@wallet.Icon" title="@wallet.Name"/>
+                @if (wallet.Installed)
+                {
+                    if (wallet.Connected)
+                    {
+                        <button @onclick="() => DisconnectWallet(wallet.Key)">Disconnect</button>
+                    }
+                    else
+                    {
+                        if (WalletConnectorService.Connecting)
+                        {
+                            <button disabled="disabled">Connecting...</button>
+                        }
+                        else
+                        {
+                            <button @onclick="() => ConnectWallet(wallet.Key)">Connect</button>
+                        }
+                    }
+                }
+                else
+                {
+                    <a href="@wallet.Url" target="_blank">Install</a>
+                }
+            </li>
+        }
+    </ul>
+}
+<hr/>
+<div>
+    <span>RESULTS</span>
+    @foreach (var displayItem in DisplayResult)
+    {
+        <div>
+            @displayItem
+        </div>
+    }
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestGetNetwork())">Get Network</button>
+</div>
+<hr/>
+<div>
+    <button @onclick="@(async e => await TestBalance())">Get Balance</button>
+</div>
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        Wallets = await WalletConnectorService.GetWallets();
+    }
+
+    private async Task ConnectWallet(string walletKey)
+    {
+        try
+        {
+            bool connected = await WalletConnectorService.ConnectWalletAsync(walletKey);
+            Wallets.First(x => x.Key == walletKey).Connected = connected;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            DisplayResult.Clear();
+            DisplayResult.Add(e.Message);
+        }
+    }
+
+    private async void DisconnectWallet(string walletKey)
+    {
+        await WalletConnectorService.Disconnect();
+        Wallets.First(x => x.Key == walletKey).Connected = false;
+        StateHasChanged();
+    }
+
+    private List<WalletExtensionState> Wallets { get; set; } = new();
+
+    private List<string> DisplayResult = new List<string>();
+
+    private async ValueTask TestGetNetwork()
+    {
+        if (WalletConnectorService.ConnectedWallet is null)
+        {
+            await ConnectWallet("nami");
+        }
+        
+        var result = await WalletConnectorService.GetNetworkType();
+        DisplayResult.Clear();
+        DisplayResult.Add($"Network Type: {result}");
+    }
+
+    private async ValueTask TestGetCollateralUtxos()
+    {
+        if (WalletConnectorService.ConnectedWallet is null)
+        {
+            await ConnectWallet("nami");
+        }
+        
+        Utxo[] result = await WalletConnectorService.GetCollateral(new CollateralParams {Amount = 5});
+        DisplayResult.Clear();
+        foreach (var utxo in result)
+        {
+            DisplayResult.Add($"Network Type: {utxo.Value}");
+        }
+    }
+    
+    private async ValueTask TestBalance()
+    {
+        if (WalletConnectorService.ConnectedWallet is null)
+        {
+            await ConnectWallet("nami");
+        }
+        
+        TransactionOutputValue result = await WalletConnectorService.GetBalance();
+        DisplayResult.Clear();
+        foreach ((byte[] name, NativeAsset asset) in result.MultiAsset)
+        {
+            var policyId = name.ToStringHex();
+            DisplayResult.Add($" - Policy: {policyId}");
+
+            foreach ((byte[] key, ulong value) in asset.Token)
+            {
+                var assetName = Encoding.ASCII.GetString(key);
+                DisplayResult.Add($"   -- AssetName: {assetName}");
+                DisplayResult.Add($"   -- AssetName: {key.ToStringHex()}");
+                DisplayResult.Add($"   -- Tokens: {value}");
+            }
+        }
+    }
+}
