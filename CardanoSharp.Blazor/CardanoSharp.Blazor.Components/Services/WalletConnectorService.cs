@@ -509,12 +509,6 @@ namespace CardanoSharp.Blazor.Components.Services
                 Icon = WalletIcons.NamiIcon, 
                 Url = "https://namiwallet.io" 
             },
-            new WalletExtension() { 
-                Key = "flint", 
-                Name = "Flint", 
-                Icon = WalletIcons.FlintIcon, 
-                Url = "https://flint-wallet.com" 
-            },
         };
     }
     
