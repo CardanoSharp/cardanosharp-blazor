@@ -249,19 +249,24 @@
             if (myWebWallets.Connected)
             {
                 var result = await myWebWallets.GetBalance();
+
                 DisplayResult.Clear();
                 DisplayResult.Add($"Balance:");
                 DisplayResult.Add($" - Coin: {result.Coin}");
-                foreach (var asset in result.MultiAsset)
-                {
-                    var policyId = asset.Key.ToStringHex();
-                    DisplayResult.Add($" - Policy: {policyId}");
 
-                    foreach (var token in asset.Value.Token)
+                if(result.MultiAsset != null)
+                {
+                    foreach (var asset in result.MultiAsset)
                     {
-                        var assetName = token.Key.ToStringHex();
-                        DisplayResult.Add($"   - AssetName: {assetName}");
-                        DisplayResult.Add($"   - Tokens: {token.Value}");
+                        var policyId = asset.Key.ToStringHex();
+                        DisplayResult.Add($" - Policy: {policyId}");
+
+                        foreach (var token in asset.Value.Token)
+                        {
+                            var assetName = token.Key.ToStringHex();
+                            DisplayResult.Add($"   - AssetName: {assetName}");
+                            DisplayResult.Add($"   - Tokens: {token.Value}");
+                        }
                     }
                 }
             }
