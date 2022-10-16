@@ -22,13 +22,18 @@
 else
 {
     <div class="wallet-connector">
-        @if (!Connected)
+
+        @if (Connecting)
         {
-            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connect Wallet</div>
+            <div class="wallet-connector-button">Connecting...</div>
+        }
+        else if (!Connected)
+        {
+            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connect</div>
         }
         else
         {
-            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connected <img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name"/></div>
+            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connected <img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name" /></div>
         }
 
         @if (_showPopup)
@@ -139,6 +144,8 @@ else
 }
 
 @code {
+    private const string _connectedWalletKey = "connectedWalletKey";
+
     [Parameter]
     public bool OutputDebug { get; set; }
     [Parameter]
@@ -191,6 +198,9 @@ else
     private WalletConnectorJsInterop? _walletConnectorJs;
     private bool _connecting;
     private bool _showPopup;
+
+    public bool Connecting { get; private set; } = true;
+    
     public bool Initialized { get; private set; }
     public bool Connected
     {
@@ -210,8 +220,74 @@ else
         //set up initial _wallets state from above
         _selfReference = DotNetObjectReference.Create(this);
         _wallets = await _walletConnectorJs.Init(SupportedExtensions, _selfReference);
+        
         Initialized = true;
+
+        await WalletOnInitialized();
+
         return;
+    }
+
+    private async Task WalletOnInitialized()
+    {
+        var supportedWalletKeys = SupportedExtensions?.Select(s => s.Key)?.ToArray();
+
+        if (supportedWalletKeys != null && supportedWalletKeys.Length > 0)
+        {
+            var storedWalletKey = await HasLocalStorageWalletKey(supportedWalletKeys);
+
+            if (!string.IsNullOrWhiteSpace(storedWalletKey))
+            {
+                if (!await ConnectWalletAsync(storedWalletKey, false))
+                {
+                    await RemoveStoredWalletKey();
+                }
+            }
+        }
+
+        Connecting = false;
+
+        StateHasChanged();
+    }
+
+    private async Task<string> HasLocalStorageWalletKey(params string[] supportedWalletKeys)
+    {
+        var result = string.Empty;
+
+        try
+        {
+            if (_localStorage != null && supportedWalletKeys != null)
+            {
+                var walletKey = await _localStorage.GetItemAsStringAsync(_connectedWalletKey);
+
+                if (!string.IsNullOrWhiteSpace(walletKey) && supportedWalletKeys.Any(w => w.Equals(walletKey, StringComparison.OrdinalIgnoreCase)))
+                {
+                    result = walletKey;
+                }
+            }
+        }
+        catch (Exception err)
+        {
+            Console.WriteLine(err.Message);
+        }
+
+        return result;
+    }
+
+    private async Task SetStoredWalletKey(string walletKey)
+    {
+        if (_localStorage != null && !string.IsNullOrWhiteSpace(walletKey))
+        {
+            await _localStorage.SetItemAsStringAsync(_connectedWalletKey, walletKey.ToString());
+        }
+    }
+
+    private async Task RemoveStoredWalletKey()
+    {
+        if (_localStorage != null)
+        {
+            await _localStorage.RemoveItemAsync(_connectedWalletKey);
+        }
     }
 
     private void ModalClick()
@@ -265,6 +341,9 @@ else
                 _connectedWallet = _wallets!.First(x => x.Key == walletKey);
                 await RefreshConnectedWallet();
                 _wallets!.First(x => x.Key == walletKey).Connected = true;
+
+                await SetStoredWalletKey(walletKey);
+
                 if (AutoCloseOnConnect)
                 {
                     _showPopup = false;
@@ -312,6 +391,9 @@ else
             _wallets!.First(x => x.Connected).Connected = false;
         }
         _connectedWallet = null;
+
+        await RemoveStoredWalletKey();
+
         if (AutoCloseOnDisconnect)
         {
             _showPopup = false;
