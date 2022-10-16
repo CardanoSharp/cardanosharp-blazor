@@ -12,6 +12,7 @@
 @using PeterO.Cbor2;
 
 @inject IJSRuntime JS
+@inject Blazored.LocalStorage.ILocalStorageService _localStorage
 
 @if (WalletConnectorButtonContent is not null && WalletsModalContent is not null)
 {
