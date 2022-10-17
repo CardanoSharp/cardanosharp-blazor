@@ -14,7 +14,11 @@
 
 <h1>Wallet Connector Test</h1>
 
-<WalletConnector @ref="myWebWallets" OutputDebug="true" OnConnect="WalletConnected" OnDisconnect="WalletDisconnected">
+<WalletConnector @ref="myWebWallets" 
+    OutputDebug="true" 
+    PersistConnectedWallet="false"
+    OnConnect="WalletConnected" 
+    OnDisconnect="WalletDisconnected">
 </WalletConnector>
 
 <div>

@@ -23,17 +23,13 @@ else
 {
     <div class="wallet-connector">
 
-        @if (Connecting)
+        @if (!Connected)
         {
-            <div class="wallet-connector-button">Connecting...</div>
-        }
-        else if (!Connected)
-        {
-            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connect</div>
+            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog" disabled="@IsDisconnectedButtonDisabled">@DisconnectedButtonContent</div>
         }
         else
         {
-            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connected <img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name" /></div>
+            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connected<img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name" /></div>
         }
 
         @if (_showPopup)
@@ -147,6 +143,8 @@ else
     private const string _connectedWalletKey = "connectedWalletKey";
 
     [Parameter]
+    public bool PersistConnectedWallet { get; set; }
+    [Parameter]
     public bool OutputDebug { get; set; }
     [Parameter]
     public string Header { get; set; } = "Choose Your Wallet";
@@ -199,8 +197,9 @@ else
     private bool _connecting;
     private bool _showPopup;
 
-    public bool Connecting { get; private set; } = true;
-    
+    protected string DisconnectedButtonContent = "Initializing...";
+    protected bool IsDisconnectedButtonDisabled = true;
+
     public bool Initialized { get; private set; }
     public bool Connected
     {
@@ -220,37 +219,43 @@ else
         //set up initial _wallets state from above
         _selfReference = DotNetObjectReference.Create(this);
         _wallets = await _walletConnectorJs.Init(SupportedExtensions, _selfReference);
-        
+
         Initialized = true;
 
-        await WalletOnInitialized();
+        await InitializePersistedWalletAsync();
+
+        if (!Connected)
+        {
+            DisconnectedButtonContent = "Connect";
+            IsDisconnectedButtonDisabled = false;
+        }
 
         return;
     }
 
-    private async Task WalletOnInitialized()
+    private async Task InitializePersistedWalletAsync()
     {
+        if (!PersistConnectedWallet) { return; }
+
         var supportedWalletKeys = SupportedExtensions?.Select(s => s.Key)?.ToArray();
 
         if (supportedWalletKeys != null && supportedWalletKeys.Length > 0)
         {
-            var storedWalletKey = await HasLocalStorageWalletKey(supportedWalletKeys);
+            var storedWalletKey = await GetStoredWalletKeyAsync(supportedWalletKeys);
 
             if (!string.IsNullOrWhiteSpace(storedWalletKey))
             {
                 if (!await ConnectWalletAsync(storedWalletKey, false))
                 {
-                    await RemoveStoredWalletKey();
+                    await RemoveStoredWalletKeyAsync();
                 }
             }
         }
 
-        Connecting = false;
-
         StateHasChanged();
     }
 
-    private async Task<string> HasLocalStorageWalletKey(params string[] supportedWalletKeys)
+    private async Task<string> GetStoredWalletKeyAsync(params string[] supportedWalletKeys)
     {
         var result = string.Empty;
 
@@ -274,17 +279,17 @@ else
         return result;
     }
 
-    private async Task SetStoredWalletKey(string walletKey)
+    private async Task SetStoredWalletKeyAsync(string walletKey)
     {
-        if (_localStorage != null && !string.IsNullOrWhiteSpace(walletKey))
+        if (PersistConnectedWallet && _localStorage != null && !string.IsNullOrWhiteSpace(walletKey))
         {
             await _localStorage.SetItemAsStringAsync(_connectedWalletKey, walletKey.ToString());
         }
     }
 
-    private async Task RemoveStoredWalletKey()
+    private async Task RemoveStoredWalletKeyAsync()
     {
-        if (_localStorage != null)
+        if (PersistConnectedWallet && _localStorage != null)
         {
             await _localStorage.RemoveItemAsync(_connectedWalletKey);
         }
@@ -342,7 +347,7 @@ else
                 await RefreshConnectedWallet();
                 _wallets!.First(x => x.Key == walletKey).Connected = true;
 
-                await SetStoredWalletKey(walletKey);
+                await SetStoredWalletKeyAsync(walletKey);
 
                 if (AutoCloseOnConnect)
                 {
@@ -392,7 +397,7 @@ else
         }
         _connectedWallet = null;
 
-        await RemoveStoredWalletKey();
+        await RemoveStoredWalletKeyAsync();
 
         if (AutoCloseOnDisconnect)
         {
