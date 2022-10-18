@@ -53,15 +53,9 @@ namespace CardanoSharp.Blazor.Components
 			return Wallets;
 		}
 
-		private void CheckIfInitializedOrThrow()
-		{
-			if (!Initialized)
-				throw new InvalidOperationException("WalletConnectorJsInterop.Init must be called before other methods");
-		}
-
 		public async ValueTask<bool> IsWalletInstalled(string key)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				return await _jsWalletConnector!.InvokeAsync<bool>("isWalletInstalled", key);
@@ -74,7 +68,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<bool> IsWalletEnabled(string key)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				return await _jsWalletConnector!.InvokeAsync<bool>("isWalletEnabled", key);
@@ -87,7 +81,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> GetWalletApiVersion(string key)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				return await _jsWalletConnector!.InvokeAsync<string>("getWalletApiVersion", key);
@@ -100,7 +94,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> GetWalletName(string key)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				return await _jsWalletConnector!.InvokeAsync<string>("getWalletName", key);
@@ -113,7 +107,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> GetWalletIcon(string key)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				return await _jsWalletConnector!.InvokeAsync<string>("getWalletIcon", key);
@@ -126,7 +120,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<bool> ConnectWallet(string key)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				return await _jsWalletConnector!.InvokeAsync<bool>("connectWallet", key);
@@ -139,7 +133,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask Disconnect()
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				ConnectedWallet = null;
@@ -153,7 +147,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<int> GetNetworkId()
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var networkId = await _jsWalletConnector!.InvokeAsync<int>("getNetworkId");
@@ -167,7 +161,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string[]> GetUtxos(string? amountCbor = null, Paginate? paginate = null)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var utxos = await _jsWalletConnector!.InvokeAsync<string[]>("getUtxos", amountCbor, paginate);
@@ -181,7 +175,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string[]> GetCollateral(CollateralParams collateralParams)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var utxos = await _jsWalletConnector!.InvokeAsync<string[]>("getCollateral", collateralParams);
@@ -195,7 +189,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> GetBalance()
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var balance = await _jsWalletConnector!.InvokeAsync<string>("getBalance");
@@ -209,7 +203,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string[]> GetUsedAddresses(Paginate? paginate = null)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var addresses = await _jsWalletConnector!.InvokeAsync<string[]>("getUsedAddresses", paginate);
@@ -223,7 +217,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string[]> GetUnusedAddresses()
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var addresses = await _jsWalletConnector!.InvokeAsync<string[]>("getUsedAddresses");
@@ -237,7 +231,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> GetChangeAddress()
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var address = await _jsWalletConnector!.InvokeAsync<string>("getChangeAddress");
@@ -251,7 +245,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string[]> GetRewardAddresses()
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var addresses = await _jsWalletConnector!.InvokeAsync<string[]>("getRewardAddresses");
@@ -265,7 +259,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> SignTx(string txCbor, bool partialSign = false)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var cborWitnessSet = await _jsWalletConnector!.InvokeAsync<string>("signTx", txCbor, partialSign);
@@ -279,7 +273,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<DataSignature> SignData(string address, string hexData)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var dataSignature = await _jsWalletConnector!.InvokeAsync<DataSignature>("signData", address, hexData);
@@ -293,7 +287,7 @@ namespace CardanoSharp.Blazor.Components
 
 		public async ValueTask<string> SubmitTx(string txCbor)
 		{
-			CheckIfInitializedOrThrow();
+			_jsWalletConnector.ThrowIfNull();
 			try
 			{
 				var txHash = await _jsWalletConnector!.InvokeAsync<string>("submitTx", txCbor);
