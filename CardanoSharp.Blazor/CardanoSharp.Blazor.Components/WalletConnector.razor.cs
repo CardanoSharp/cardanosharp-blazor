@@ -37,10 +37,13 @@ public partial class WalletConnector
 	public bool AutoCloseOnDisconnect { get; set; }
 
 	[Parameter]
-	public bool HideOnModalClick { get; set; } = true;
+	public ModalClickHideOptions HideOnModalClick { get; set; } = ModalClickHideOptions.Always;
 
 	[Parameter]
 	public bool HideCloseButton { get; set; } = false;
+
+	[Parameter]
+	public bool DisconnectOnConnectButtonClick { get; set; } = false;
 
 	[Parameter]
 	public List<WalletExtension> SupportedExtensions { get; set; } = new List<WalletExtension>()
@@ -205,10 +208,19 @@ public partial class WalletConnector
 	private void ModalClick()
 	{
 		Debug("MODAL CLICK");
-		if (HideOnModalClick)
+		if (ShouldModalHide())
 		{
 			HideConnectWalletDialog();
 		}
+	}
+
+	private bool ShouldModalHide()
+	{
+		if (HideOnModalClick == ModalClickHideOptions.Always)
+			return true;
+		if (HideOnModalClick == ModalClickHideOptions.WhenConnected && Connected)
+			return true;
+		return false;
 	}
 
 	private void Debug(string text)
@@ -325,6 +337,13 @@ public partial class WalletConnector
 		{
 			throw new InvalidOperationException("No wallet connected");
 		}
+	}
+
+	public async ValueTask OnConnectButtonClickAsync()
+	{
+		if (DisconnectOnConnectButtonClick)
+			await DisconnectWalletAsync().ConfigureAwait(false);
+		ShowConnectWalletDialog();
 	}
 
 	public void ShowConnectWalletDialog()

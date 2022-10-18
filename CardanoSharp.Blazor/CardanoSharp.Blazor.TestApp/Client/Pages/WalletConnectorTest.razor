@@ -20,6 +20,10 @@
 <WalletConnector @ref="myWebWallets" 
     OutputDebug="true" 
     PersistConnectedWallet="true"
+    HideCloseButton="true"
+    DisconnectOnConnectButtonClick="false"
+    AutoCloseOnConnect="true"
+    HideOnModalClick="ModalClickHideOptions.WhenConnected"
     OnConnect="WalletConnected" 
     OnDisconnect="WalletDisconnected">
 </WalletConnector>

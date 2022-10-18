@@ -29,11 +29,11 @@ else
 
         @if (!Connected)
         {
-            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog" disabled="@IsDisconnectedButtonDisabled">@DisconnectedButtonContent</div>
+            <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))" disabled="@IsDisconnectedButtonDisabled">@DisconnectedButtonContent</div>
         }
         else
         {
-            <div class="wallet-connector-button" @onclick="ShowConnectWalletDialog">Connected<img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name" /></div>
+            <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))">Connected<img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name" /></div>
         }
 
         @if (_showPopup)
