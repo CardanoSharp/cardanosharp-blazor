@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using CardanoSharp.Blazor.Components.Enums;
 using CardanoSharp.Blazor.Components.Exceptions;
 using CardanoSharp.Blazor.Components.Extensions;
@@ -517,6 +518,7 @@ namespace CardanoSharp.Blazor.Components.Services
 		public static void AddCardanoWalletConnector(this IServiceCollection services, params WalletExtension[] acceptedWallets)
 		{
 			services.AddScoped(x => new WalletConnectorService(x.GetRequiredService<IJSRuntime>(), acceptedWallets));
+			services.AddBlazoredLocalStorage();
 		}
 	}
 }
