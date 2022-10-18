@@ -1,6 +1,7 @@
 ﻿using CardanoSharp.Blazor.Components.Enums;
 using CardanoSharp.Blazor.Components.Exceptions;
 using CardanoSharp.Blazor.Components.Models.Errors;
+using CardanoSharp.Wallet.CIPs.CIP30.Models.Errors;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 
@@ -41,7 +42,7 @@ namespace CardanoSharp.Blazor.Components.Extensions
 			try
 			{
 				var paginateError = JsonConvert.DeserializeObject<PaginateError>(jsException.Message);
-				if (paginateError != null && paginateError.maxSize != 0)
+				if (paginateError != null && paginateError.MaxSize != 0)
 				{
 					//is definitely paginate type error
 					return new PaginateException(paginateError, jsException.Message, jsException);

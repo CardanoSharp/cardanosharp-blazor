@@ -4,7 +4,7 @@ namespace CardanoSharp.Blazor.Components.ViewModels;
 
 public class WalletButtonViewModel
 {
-	public WalletButtonViewModel(bool isConnected, WalletExtensionState connectedWallet)
+	public WalletButtonViewModel(bool isConnected, WalletExtensionState? connectedWallet)
 	{
 		IsConnected = isConnected;
 		ConnectedWallet = connectedWallet;
@@ -12,5 +12,5 @@ public class WalletButtonViewModel
 
 	public bool IsConnected { get; set; }
 
-	public WalletExtensionState ConnectedWallet { get; set; }
+	public WalletExtensionState? ConnectedWallet { get; set; }
 }

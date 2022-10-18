@@ -1,10 +1,14 @@
 ﻿@page "/walletconnectortest2"
+@using CardanoSharp.Wallet.CIPs.CIP30.Models
+@using CardanoSharp.Wallet.Models;
 @using CardanoSharp.Blazor.Components;
+@using CardanoSharp.Blazor.Components.Extensions;
 @using CardanoSharp.Blazor.Components.Models;
 @using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Blazor.TestApp.Shared;
 @using CardanoSharp.Wallet.Models.Transactions
 @using CardanoSharp.Wallet.Extensions;
+@using CardanoSharp.Wallet.Extensions.Models;
 @using CardanoSharp.Wallet.Extensions.Models.Transactions;
 @using CardanoSharp.Wallet.Encoding;
 
@@ -43,7 +47,7 @@
                 else
                 {
                     <ul>
-                        @foreach (WalletExtensionState wallet in context.Wallets)
+                        @foreach (WalletExtensionState wallet in context.Wallets!)
                         {
                             <li style="margin-left: 15px">@wallet.Name <img style="width: 18px;" src="@wallet.Icon" title="@wallet.Name"/>
                                 @if (wallet.Installed)
@@ -233,10 +237,10 @@
                         DisplayResult.Add($"INPUT # {item.TxHash}");
                         DisplayResult.Add($"INPUT IDX {item.TxIndex}");
                         DisplayResult.Add($"OUTPUT ADDR {item.OutputAddress}");
-                        DisplayResult.Add($"OUTPUT COIN {item.Value}");
-                        if (item.AssetList != null && item.AssetList.Count() > 0)
+                        DisplayResult.Add($"OUTPUT COIN {item.Balance.Lovelaces}");
+                        if (item.Balance.Assets != null && item.Balance.Assets.Count() > 0)
                         {
-                            var assets = item.AssetList.Sum(x => Convert.ToDecimal(x.Quantity));
+                            var assets = item.Balance.Assets.Sum(x => Convert.ToDecimal(x.Quantity));
                             DisplayResult.Add($"OUTPUT TOKENS {assets}");
                         }
                     }
@@ -259,7 +263,7 @@
         {
             if (myWebWallets.Connected)
             {
-                var result = await myWebWallets.GetCollateral(new CollateralParams() {Amount = 5});
+                var result = await myWebWallets.GetCollateral(new CollateralParams() {Amount = "5"});
                 DisplayResult.Clear();
                 if (result != null)
                 {
@@ -269,10 +273,10 @@
                         DisplayResult.Add($"INPUT # {item.TxHash}");
                         DisplayResult.Add($"INPUT IDX {item.TxIndex}");
                         DisplayResult.Add($"OUTPUT ADDR {item.OutputAddress}");
-                        DisplayResult.Add($"OUTPUT COIN {item.Value}");
-                        if (item.AssetList != null && item.AssetList.Count() > 0)
+                        DisplayResult.Add($"OUTPUT COIN {item.Balance.Lovelaces}");
+                        if (item.Balance.Assets != null && item.Balance.Assets.Count() > 0)
                         {
-                            var assets = item.AssetList.Sum(x => Convert.ToDecimal(x.Quantity));
+                            var assets = item.Balance.Assets.Sum(x => Convert.ToDecimal(x.Quantity));
                             DisplayResult.Add($"OUTPUT TOKENS {assets}");
                         }
                     }
