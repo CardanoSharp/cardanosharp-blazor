@@ -3,7 +3,6 @@ export function createWalletConnector() {
         connectedWallet: null,
 
         init: (dotNetRef) => {
-
             document.onkeydown = function (e) {
                 e = e || window.event;
                 if (e.key === "Escape") {
