@@ -46,7 +46,7 @@
                 else
                 {
                     <ul>
-                        @foreach (WalletExtensionState wallet in context.Wallets)
+                        @foreach (WalletExtensionState wallet in context.Wallets!)
                         {
                             <li style="margin-left: 15px">@wallet.Name <img style="width: 18px;" src="@wallet.Icon" title="@wallet.Name"/>
                                 @if (wallet.Installed)
