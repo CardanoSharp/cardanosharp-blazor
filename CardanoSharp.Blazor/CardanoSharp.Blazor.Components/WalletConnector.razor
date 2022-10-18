@@ -1,10 +1,13 @@
-﻿@using CardanoSharp.Wallet.Models.Transactions
+﻿@using CardanoSharp.Wallet.Models;
+@using CardanoSharp.Wallet.Models.Transactions;
 @using CardanoSharp.Wallet.Extensions.Models.Transactions;
-@using Microsoft.JSInterop
-@using CardanoSharp.Blazor.Components.Models
+@using Microsoft.JSInterop;
+@using CardanoSharp.Blazor.Components.Models;
+@using CardanoSharp.Blazor.Components.Extensions;
 @using CardanoSharp.Blazor.Components.Exceptions;
 @using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Wallet.Extensions;
+@using CardanoSharp.Wallet.Extensions.Models;
 @using CardanoSharp.Wallet.Enums;
 @using CardanoSharp.Wallet.Models.Addresses;
 @using CardanoSharp.Blazor.Components.Utils;
@@ -187,9 +190,10 @@ else
     [Parameter]
     public EventCallback OnDisconnect { get; set; }
     [Parameter]
-    public RenderFragment<WalletButtonViewModel> WalletConnectorButtonContent { get; set; }
+    public RenderFragment<WalletButtonViewModel> WalletConnectorButtonContent { get; set; } = null!;
     [Parameter]
-    public RenderFragment<WalletsModalContentViewModel> WalletsModalContent { get; set; }
+    public RenderFragment<WalletsModalContentViewModel> WalletsModalContent { get; set; } = null!;
+
     private List<WalletExtensionState>? _wallets = new List<WalletExtensionState>();
     private DotNetObjectReference<WalletConnector>? _selfReference;
     private WalletExtensionState? _connectedWallet;
@@ -335,7 +339,7 @@ else
         try
         {
             if (!suppressEvent)
-                OnConnectStart.InvokeAsync().ConfigureAwait(false);
+                _ = OnConnectStart.InvokeAsync().ConfigureAwait(false);
 
             _connecting = true;
             StateHasChanged();
@@ -355,7 +359,7 @@ else
                 }
             }
             if (!suppressEvent)
-                OnConnect.InvokeAsync();
+                _ = OnConnect.InvokeAsync();
             return result;
         }
         //suppress all errors as it could be valid user refusal 
@@ -363,22 +367,22 @@ else
         catch (ErrorCodeException ecex)
         {
             Debug("Caught error code exception: " + ecex.Code + " - " + ecex.Info);
-            OnConnectError.InvokeAsync(ecex);
+            _ = OnConnectError.InvokeAsync(ecex);
         }
         catch (PaginateException pex)
         {
             Debug("Caught paginate exception: " + pex.MaxSize);
-            OnConnectError.InvokeAsync(pex);
+            _ = OnConnectError.InvokeAsync(pex);
         }
         catch (WebWalletException wex)
         {
             Debug("Caught web wallet exception: " + wex.Data.Keys.ToString());
-            OnConnectError.InvokeAsync(wex);
+            _ = OnConnectError.InvokeAsync(wex);
         }
         catch (Exception ex)
         {
             Debug("Caught exception: " + ex.Message);
-            OnConnectError.InvokeAsync(ex);
+            _ = OnConnectError.InvokeAsync(ex);
         }
         finally
         {
@@ -424,7 +428,7 @@ else
     {
         if (Connected)
         {
-            RefreshConnectedWallet();
+            _ = RefreshConnectedWallet();
         }
         _showPopup = true;
         StateHasChanged();
@@ -525,11 +529,12 @@ else
 
     public async ValueTask<Address[]> GetUsedAddresses(Paginate? paginate = null)
     {
+        CheckInitializedAndConnected();
         var addresses = await GetUsedAddressesHex(paginate);
         var response = new List<Address>();
         foreach (var address in addresses)
         {
-            response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet.Network), address.HexToByteArray()));
+            response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet!.Network), address.HexToByteArray()));
         }
         return response.ToArray();
     }

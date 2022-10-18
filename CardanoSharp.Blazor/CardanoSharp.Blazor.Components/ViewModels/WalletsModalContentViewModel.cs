@@ -4,7 +4,7 @@ namespace CardanoSharp.Blazor.Components.ViewModels;
 
 public class WalletsModalContentViewModel
 {
-	public WalletsModalContentViewModel(bool initialized, List<WalletExtensionState> wallets, bool isWalletConnected, WalletExtensionState connectedWallet, Func<string, bool, ValueTask<bool>> connectWalletAsync, Func<bool, ValueTask> disconnectWalletAsync)
+	public WalletsModalContentViewModel(bool initialized, List<WalletExtensionState>? wallets, bool isWalletConnected, WalletExtensionState? connectedWallet, Func<string, bool, ValueTask<bool>> connectWalletAsync, Func<bool, ValueTask> disconnectWalletAsync)
 	{
 		Initialized = initialized;
 		Wallets = wallets;
@@ -16,11 +16,11 @@ public class WalletsModalContentViewModel
 
 	public bool Initialized { get; set; }
 
-	public List<WalletExtensionState> Wallets { get; set; }
+	public List<WalletExtensionState>? Wallets { get; set; }
 
 	public bool IsWalletConnected { get; set; }
 
-	public WalletExtensionState ConnectedWallet { get; set; }
+	public WalletExtensionState? ConnectedWallet { get; set; }
 
 	public Func<string, bool, ValueTask<bool>> ConnectWalletAsync { get; set; }
 

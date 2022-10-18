@@ -2,6 +2,8 @@
 @using CardanoSharp.Blazor.Components;
 @using CardanoSharp.Blazor.Components.Models;
 @using CardanoSharp.Wallet.Extensions
+@using CardanoSharp.Wallet.Extensions.Models;
+@using CardanoSharp.Wallet.Models;
 @using CardanoSharp.Wallet.Models.Transactions
 @using System.Text
 @using CardanoSharp.Blazor.Components.Services
@@ -125,7 +127,7 @@ else
         DisplayResult.Clear();
         foreach (var utxo in result)
         {
-            DisplayResult.Add($"Network Type: {utxo.Value}");
+            DisplayResult.Add($"Collateral value: {utxo.Balance.Lovelaces}");
         }
     }
     
