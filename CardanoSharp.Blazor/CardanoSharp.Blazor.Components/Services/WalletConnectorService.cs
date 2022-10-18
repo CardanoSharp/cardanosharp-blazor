@@ -4,6 +4,7 @@ using CardanoSharp.Blazor.Components.Exceptions;
 using CardanoSharp.Blazor.Components.Extensions;
 using CardanoSharp.Blazor.Components.Models;
 using CardanoSharp.Blazor.Components.Utils;
+using CardanoSharp.Wallet.CIPs.CIP30.Models;
 using CardanoSharp.Wallet.Enums;
 using CardanoSharp.Wallet.Extensions;
 using CardanoSharp.Wallet.Extensions.Models;

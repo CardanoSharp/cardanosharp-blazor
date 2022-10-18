@@ -3,6 +3,7 @@
 @using CardanoSharp.Blazor.Components.Models;
 @using CardanoSharp.Blazor.Components.Enums;
 @using CardanoSharp.Blazor.TestApp.Shared;
+@using CardanoSharp.Wallet.CIPs.CIP30.Models
 @using CardanoSharp.Wallet.Models.Transactions
 @using CardanoSharp.Wallet.Extensions;
 @using CardanoSharp.Wallet.Extensions.Models.Transactions;
@@ -218,7 +219,7 @@
         {
             if (myWebWallets.Connected)
             {
-                var result = await myWebWallets.GetCollateral(new CollateralParams() { Amount = 5 });
+                var result = await myWebWallets.GetCollateral(new CollateralParams() { Amount = "5" });
                 DisplayResult.Clear();
                 if (result != null)
                 {

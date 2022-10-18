@@ -1,4 +1,5 @@
 ﻿@page "/walletconnectortest3"
+@using CardanoSharp.Wallet.CIPs.CIP30.Models
 @using CardanoSharp.Blazor.Components;
 @using CardanoSharp.Blazor.Components.Models;
 @using CardanoSharp.Wallet.Extensions
@@ -123,7 +124,7 @@ else
             await ConnectWallet("nami");
         }
         
-        Utxo[] result = await WalletConnectorService.GetCollateral(new CollateralParams {Amount = 5});
+        Utxo[] result = await WalletConnectorService.GetCollateral(new CollateralParams {Amount = "5"});
         DisplayResult.Clear();
         foreach (var utxo in result)
         {

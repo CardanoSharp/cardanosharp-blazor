@@ -1,6 +1,7 @@
 using CardanoSharp.Blazor.Components.Enums;
 using CardanoSharp.Blazor.Components.Extensions;
 using CardanoSharp.Blazor.Components.Models;
+using CardanoSharp.Wallet.CIPs.CIP30.Models;
 using Microsoft.JSInterop;
 
 namespace CardanoSharp.Blazor.Components
