@@ -116,10 +116,17 @@
 	flex-direction: row-reverse;
 	background-color: #fefefe;
 	margin: 15% auto; /* 15% from the top and centered */
-	padding: 10px 0 10px 20px;
 	border: 1px solid #888;
 	width: fit-content;
 	height: fit-content;
+}
+
+.pad-tlb-10 {
+	padding: 10px 0 10px 10px;
+}
+
+.pad-10 {
+	padding: 10px;
 }
 
 .modal-content-main {
