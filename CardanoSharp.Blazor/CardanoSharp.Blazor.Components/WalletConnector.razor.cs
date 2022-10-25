@@ -466,7 +466,7 @@ public partial class WalletConnector
 		var response = new List<Address>();
 		foreach (var address in addresses)
 		{
-			response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet!.Network), address.HexToByteArray()));
+			response.Add(new Address(address.HexToByteArray()));
 		}
 		return response.ToArray();
 	}
@@ -489,7 +489,7 @@ public partial class WalletConnector
 		foreach (var address in addresses)
 		{
 			Debug($"UNUSED ADDRESS: {address}");
-			response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet!.Network), address.HexToByteArray()));
+			response.Add(new Address(address.HexToByteArray()));
 		}
 		return response.ToArray();
 	}
@@ -508,7 +508,7 @@ public partial class WalletConnector
 	public async ValueTask<Address> GetChangeAddress()
 	{
 		var address = await GetChangeAddressHex();
-		return new Address(ComponentUtils.GetPrefix(AddressType.Base, _connectedWallet!.Network), address.HexToByteArray());
+		return new Address(address.HexToByteArray());
 	}
 
 	public async ValueTask<string> GetChangeAddressHex()
@@ -525,7 +525,7 @@ public partial class WalletConnector
 		var response = new List<Address>();
 		foreach (var address in addresses)
 		{
-			response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Reward, _connectedWallet!.Network), address.HexToByteArray()));
+			response.Add(new Address(address.HexToByteArray()));
 		}
 		return response.ToArray();
 	}
