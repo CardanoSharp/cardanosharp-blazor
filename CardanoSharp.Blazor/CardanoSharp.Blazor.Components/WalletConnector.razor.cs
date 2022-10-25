@@ -43,6 +43,9 @@ public partial class WalletConnector
 	public bool HideCloseButton { get; set; } = false;
 
 	[Parameter]
+	public bool DisableEscapeToClose { get; set; } = false;
+
+	[Parameter]
 	public bool DisconnectOnConnectButtonClick { get; set; } = false;
 
 	[Parameter]
@@ -361,6 +364,13 @@ public partial class WalletConnector
 	{
 		_showPopup = false;
 		StateHasChanged();
+	}
+
+	[JSInvokable]
+	public void EscapeKeyPressed()
+	{
+		if (!DisableEscapeToClose)
+			HideConnectWalletDialog();
 	}
 
 	public async ValueTask<NetworkType> GetNetworkType()
