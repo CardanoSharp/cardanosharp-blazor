@@ -146,7 +146,7 @@ else
             var policyId = name.ToStringHex();
             DisplayResult.Add($" - Policy: {policyId}");
 
-            foreach ((byte[] key, ulong value) in asset.Token)
+            foreach ((byte[] key, long value) in asset.Token)
             {
                 var assetName = Encoding.ASCII.GetString(key);
                 DisplayResult.Add($"   -- AssetName: {assetName}");
