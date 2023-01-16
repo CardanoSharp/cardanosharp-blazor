@@ -30,6 +30,7 @@
 	border-radius: 1em;
 	padding: 0.5em;
 	margin: 0.2em;
+    min-width: 170px;
 }
 
 .wallet-card-icon {
