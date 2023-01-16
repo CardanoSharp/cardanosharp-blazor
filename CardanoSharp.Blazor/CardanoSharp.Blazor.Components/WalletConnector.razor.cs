@@ -69,6 +69,18 @@ public partial class WalletConnector
             Icon = WalletIcons.NamiIcon,
             Url = "https://namiwallet.io"
         },
+        new WalletExtension() {
+            Key = "typhoncip30",
+            Name = "Typhon",
+            Icon = WalletIcons.TyphonIcon,
+            Url = "https://typhonwallet.io"
+        },
+        new WalletExtension() {
+            Key = "flint",
+            Name = "Flint",
+            Icon = WalletIcons.FlintIcon,
+            Url = "https://flint-wallet.com"
+        },
     };
 
     [Parameter]
