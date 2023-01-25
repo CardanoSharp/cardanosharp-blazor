@@ -235,7 +235,7 @@ namespace CardanoSharp.Blazor.Components.Services
 			try
 			{
 				IJSObjectReference jsWalletConnector = await GetWalletConnector();
-				var addresses = await jsWalletConnector.InvokeAsync<string[]>("getUsedAddresses");
+				var addresses = await jsWalletConnector.InvokeAsync<string[]>("getUnusedAddresses");
 				return addresses;
 			}
 			catch (JSException ex)
