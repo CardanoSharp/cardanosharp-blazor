@@ -220,7 +220,7 @@ namespace CardanoSharp.Blazor.Components
 			_jsWalletConnector.ThrowIfNull();
 			try
 			{
-				var addresses = await _jsWalletConnector!.InvokeAsync<string[]>("getUsedAddresses");
+				var addresses = await _jsWalletConnector!.InvokeAsync<string[]>("getUnusedAddresses");
 				return addresses;
 			}
 			catch (JSException ex)
