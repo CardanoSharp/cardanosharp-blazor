@@ -69,6 +69,10 @@ namespace CardanoSharp.Blazor.Components.Models
 
 		public int TokenCount { get; set; }
 
+		public WalletExtensionState()
+		{
+		}
+
 		public WalletExtensionState(WalletExtension copy)
 			: base(copy)
 		{
