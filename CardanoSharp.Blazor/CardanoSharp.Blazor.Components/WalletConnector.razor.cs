@@ -43,7 +43,7 @@ public partial class WalletConnector
 	public bool HideCloseButton { get; set; } = false;
 
 	[Parameter]
-	public EscapeKeyHideOptions EscapeKeyPress { get; set; } = EscapeKeyHideOptions.Always;
+	public EscapeKeyOptions EscapeKeyPress { get; set; } = EscapeKeyOptions.Always;
 
 	[Parameter]
 	public bool DisconnectOnConnectButtonClick { get; set; } = false;
@@ -387,8 +387,8 @@ public partial class WalletConnector
 	[JSInvokable]
 	public void EscapeKeyPressed()
 	{
-		if (EscapeKeyPress == EscapeKeyHideOptions.Always ||
-			EscapeKeyPress == EscapeKeyHideOptions.WhenConnected && Connected)
+		if (EscapeKeyPress == EscapeKeyOptions.Always ||
+			EscapeKeyPress == EscapeKeyOptions.WhenConnected && Connected)
 			HideConnectWalletDialog();
 	}
 

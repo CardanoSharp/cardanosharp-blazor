@@ -1,6 +1,6 @@
 ﻿namespace CardanoSharp.Blazor.Components.Enums;
 
-public enum EscapeKeyHideOptions
+public enum EscapeKeyOptions
 {
 	Never = 0,
 	Always = 1,
