@@ -10,6 +10,7 @@
 @using CardanoSharp.Wallet.Extensions.Models;
 @using CardanoSharp.Wallet.Models;
 @using CardanoSharp.Wallet.Encoding;
+@using System.Text.Json;
 
 @inject HttpClient Http
 
@@ -37,6 +38,10 @@
         @displayItem
     </div>
     }
+</div>
+<hr/>
+<div>
+    <button @onclick="@(() => TestGetWalletExtensionStates())">Get Wallet Extension States</button>
 </div>
 <hr/>
 <div>
@@ -143,6 +148,17 @@
     {
         DisplayResult.Clear();
         DisplayResult.Add($"Wallet disconnected event.");
+    }
+
+    private void TestGetWalletExtensionStates()
+    {
+        if (myWebWallets != null)
+        {
+            var result = myWebWallets.GetWalletExtensionStates();
+            var json = JsonSerializer.Serialize(result);
+            DisplayResult.Clear();
+            DisplayResult.Add($"Wallet Extension States: {json}");
+        }
     }
 
     private async ValueTask TestGetNetwork()
@@ -408,10 +424,10 @@
                     if (!String.IsNullOrEmpty(result))
                     {
                         var request = new AddWitnessRequest()
-                            {
-                                TxCbor = SignTxData,
-                                WitnessCbor = result
-                            };
+                        {
+                            TxCbor = SignTxData,
+                            WitnessCbor = result
+                        };
                         var response = await Http.PostAsJsonAsync<AddWitnessRequest>("/walletconnector/addwitness", request);
                         var addWitnessResponse = await response.Content.ReadFromJsonAsync<AddWitnessResponse>();
                         if (addWitnessResponse != null && !String.IsNullOrEmpty(addWitnessResponse.TxCbor))

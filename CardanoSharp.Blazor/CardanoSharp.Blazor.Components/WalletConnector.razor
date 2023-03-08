@@ -20,8 +20,8 @@
 
 @if (WalletConnectorButtonContent is not null && WalletsModalContent is not null)
 {
-    @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, _connectedWallet))
-    @WalletsModalContent(new WalletsModalContentViewModel(Initialized, _wallets, Connected, _connectedWallet, ConnectWalletAsync, DisconnectWalletAsync))
+    @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, ConnectedWallet))
+    @WalletsModalContent(new WalletsModalContentViewModel(Initialized, _wallets, Connected, ConnectedWallet, ConnectWalletAsync, DisconnectWalletAsync))
 }
 else
 {
@@ -33,7 +33,7 @@ else
         }
         else
         {
-            <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))">Connected<img class="wallet-icon" src="@_connectedWallet!.Icon" title="@_connectedWallet.Name" /></div>
+            <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))">Connected<img class="wallet-icon" src="@ConnectedWallet!.Icon" title="@ConnectedWallet.Name" /></div>
         }
 
         @if (_showPopup)
@@ -45,38 +45,38 @@ else
                     <div class="modal-content-main">
                         @if (Initialized && _wallets != null)
                         {
-                            @if (Connected && _connectedWallet != null)
+                            @if (Connected && ConnectedWallet != null)
                             {
                                 <div class="wallet-card">
-                                    <span class="wallet-card-title">@_connectedWallet.Name Wallet</span>
-                                    <img class="wallet-card-icon" src="@_connectedWallet.Icon" title="@_connectedWallet.Name"/>
+                                    <span class="wallet-card-title">@ConnectedWallet.Name Wallet</span>
+                                    <img class="wallet-card-icon" src="@ConnectedWallet.Icon" title="@ConnectedWallet.Name" />
                                     <div class="wallet-balance-container">
                                         <div class="wallet-balance-row dif centered">
                                             <span class="wallet-balance-header">Balance</span>
                                         </div>
                                         <div class="wallet-balance-row dif centered">
-                                            <span class="wallet-network">@_connectedWallet.Network</span>
+                                            <span class="wallet-network">@ConnectedWallet.Network</span>
                                         </div>
                                         <div class="wallet-balance-row wallet-available">
                                             <span>Available</span>
                                             <div class="wallet-adaamount-container">
-                                                <span class="wallet-balance-ada">@_connectedWallet.BalanceAda</span>
+                                                <span class="wallet-balance-ada">@ConnectedWallet.BalanceAda</span>
                                                 <span class="wallet-balance-decimal">.</span>
-                                                <span class="wallet-balance-lovelace">@_connectedWallet.BalanceRemainder</span>
-                                                <span class="wallet-balance-currency">@_connectedWallet.CoinCurrency</span>
+                                                <span class="wallet-balance-lovelace">@ConnectedWallet.BalanceRemainder</span>
+                                                <span class="wallet-balance-currency">@ConnectedWallet.CoinCurrency</span>
                                             </div>
                                         </div>
                                         <div class="wallet-balance-row wallet-unavailable">
                                             <span>Reserved</span>
                                             <div class="wallet-adaamount-container">
-                                                <span class="wallet-balance-ada">@_connectedWallet.TokenPreservationAda</span>
+                                                <span class="wallet-balance-ada">@ConnectedWallet.TokenPreservationAda</span>
                                                 <span class="wallet-balance-decimal">.</span>
-                                                <span class="wallet-balance-lovelace">@_connectedWallet.TokenPreservationRemainder</span>
-                                                <span class="wallet-balance-currency">@_connectedWallet.CoinCurrency</span>
+                                                <span class="wallet-balance-lovelace">@ConnectedWallet.TokenPreservationRemainder</span>
+                                                <span class="wallet-balance-currency">@ConnectedWallet.CoinCurrency</span>
                                             </div>
                                         </div>
                                         <div class="wallet-balance-row dif centered">
-                                            <span>Collectibles @_connectedWallet.TokenCount</span>
+                                            <span>Collectibles @ConnectedWallet.TokenCount</span>
                                         </div>
                                     </div>
                                     <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
