@@ -45,10 +45,10 @@ else
                     <div class="modal-content-main">
                         @if (Initialized && _wallets != null)
                         {
-                            @if (Connected && ConnectedWallet != null)
+                            @if (ShowConnectedWalletWithBalance)
                             {
                                 <div class="wallet-card">
-                                    <span class="wallet-card-title">@ConnectedWallet.Name Wallet</span>
+                                    <span class="wallet-card-title">@ConnectedWallet!.Name Wallet</span>
                                     <img class="wallet-card-icon" src="@ConnectedWallet.Icon" title="@ConnectedWallet.Name" />
                                     <div class="wallet-balance-container">
                                         <div class="wallet-balance-row dif centered">
@@ -94,7 +94,11 @@ else
                                         <div class="wallet-item">
                                             <img class="wallet-icon" src="@extension.Icon" title="@extension.Name"/>
                                             <span class="wallet-name">@extension.Name Wallet</span>
-                                            @if (extension.Installed)
+                                            @if (extension.Installed && extension.Connected)
+                                            {
+                                                <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
+                                            }
+                                            else if (extension.Installed)
                                             {
                                                 <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
                                             }
@@ -116,7 +120,11 @@ else
                                             <div class="wallet-card">
                                                 <span class="wallet-card-title">@extension.Name Wallet</span>
                                                 <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name"/>
-                                                @if (extension.Installed)
+                                                @if (extension.Installed && extension.Connected)
+                                                {
+                                                    <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
+                                                }
+                                                else if (extension.Installed)
                                                 {
                                                     <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
                                                 }
