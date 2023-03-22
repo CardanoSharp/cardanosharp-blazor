@@ -87,6 +87,9 @@ public partial class WalletConnector
     public WalletConnectorLayout Layout { get; set; } = WalletConnectorLayout.Card;
 
     [Parameter]
+    public ConnectedDisplayMode PopupMode { get; set; } = ConnectedDisplayMode.ShowConnected;
+
+    [Parameter]
     public EventCallback OnConnectStart { get; set; }
 
     [Parameter]
@@ -132,6 +135,17 @@ public partial class WalletConnector
         get
         {
             return ConnectedWallet != null;
+        }
+    }
+
+    private bool ShowConnectedWalletWithBalance
+    {
+        get
+        {
+            return
+                PopupMode == ConnectedDisplayMode.ShowConnected &&
+                Connected &&
+                ConnectedWallet != null;
         }
     }
 
@@ -267,6 +281,8 @@ public partial class WalletConnector
 
     public async ValueTask<bool> ConnectWalletAsync(string walletKey, bool suppressEvent = false)
     {
+        await DisconnectWalletAsync(true).ConfigureAwait(false);
+
         if (walletKey == null)
         {
             _ = OnConnectError.InvokeAsync(new ArgumentNullException(nameof(walletKey))).ConfigureAwait(false);
