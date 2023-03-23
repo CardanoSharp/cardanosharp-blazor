@@ -109,6 +109,8 @@ public partial class WalletConnector
 
     public WalletExtensionState? ConnectedWallet { get; private set; }
 
+    public bool PopupDialogShowing { get; private set; }
+
     private string ModalContentPaddingStyle
     {
         get
@@ -123,7 +125,6 @@ public partial class WalletConnector
     private DotNetObjectReference<WalletConnector>? _selfReference;
     private WalletConnectorJsInterop? _walletConnectorJs;
     private bool _connecting;
-    private bool _showPopup;
 
     protected string DisconnectedButtonContent = "Initializing...";
     protected bool IsDisconnectedButtonDisabled = true;
@@ -308,7 +309,7 @@ public partial class WalletConnector
 
                 if (AutoCloseOnConnect)
                 {
-                    _showPopup = false;
+                    PopupDialogShowing = false;
                 }
             }
             if (!suppressEvent)
@@ -358,7 +359,7 @@ public partial class WalletConnector
 
         if (AutoCloseOnDisconnect)
         {
-            _showPopup = false;
+            PopupDialogShowing = false;
         }
         if (!suppressEvent)
             await OnDisconnect.InvokeAsync();
@@ -395,14 +396,14 @@ public partial class WalletConnector
         {
             _ = RefreshConnectedWallet();
         }
-        _showPopup = true;
+        PopupDialogShowing = true;
         StateHasChanged();
     }
 
     [JSInvokable]
     public void HideConnectWalletDialog()
     {
-        _showPopup = false;
+        PopupDialogShowing = false;
         StateHasChanged();
     }
 

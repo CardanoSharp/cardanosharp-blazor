@@ -36,7 +36,7 @@ else
             <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))">Connected<img class="wallet-icon" src="@ConnectedWallet!.Icon" title="@ConnectedWallet.Name" /></div>
         }
 
-        @if (_showPopup)
+        @if (PopupDialogShowing)
         {
             <div id="myModal" class="modal" onclick="@(() => ModalClick())">
                 <!-- Modal content -->
