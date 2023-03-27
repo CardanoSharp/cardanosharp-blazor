@@ -71,6 +71,8 @@ namespace CardanoSharp.Blazor.Components.Models
 
         public int TokenCount { get; set; }
 
+        public Dictionary<string, ulong> NativeAssets { get; set; } = new();
+
         public WalletExtensionState()
         {
         }
@@ -86,6 +88,7 @@ namespace CardanoSharp.Blazor.Components.Models
             Network = copy.Network;
             TokenPreservation = copy.TokenPreservation;
             TokenCount = copy.TokenCount;
+            NativeAssets = copy.NativeAssets;
         }
 
         public WalletExtensionState(WalletExtension copy)
