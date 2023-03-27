@@ -337,10 +337,17 @@ namespace CardanoSharp.Blazor.Components.Services
             {
                 ConnectedWallet!.TokenCount = 0;
                 ConnectedWallet.TokenPreservation = 0;
+                ConnectedWallet.NativeAssets = new();
                 if (balance.MultiAsset != null && balance.MultiAsset.Count > 0)
                 {
                     ConnectedWallet.TokenPreservation = balance.MultiAsset.CalculateMinUtxoLovelace();
                     ConnectedWallet.TokenCount = balance.MultiAsset.Sum(x => x.Value.Token.Keys.Count);
+                    ConnectedWallet.NativeAssets = balance.MultiAsset.SelectMany(policy =>
+                            policy.Value.Token.Select(asset =>
+                                new KeyValuePair<string, ulong>(
+                                    $"{policy.Key.ToStringHex()}{asset.Key.ToStringHex()}",
+                                    (ulong)asset.Value)))
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 }
 
                 ConnectedWallet.Balance = balance.Coin - ConnectedWallet.TokenPreservation;
