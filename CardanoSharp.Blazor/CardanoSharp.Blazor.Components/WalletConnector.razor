@@ -26,100 +26,85 @@
 else
 {
     <div class="wallet-connector">
-
-        @if (!Connected)
+        @if (WalletConnectorButtonContent is not null)
         {
-            <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))" disabled="@IsDisconnectedButtonDisabled">@DisconnectedButtonContent</div>
+            @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, ConnectedWallet))
         }
         else
         {
-            <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))">Connected<img class="wallet-icon" src="@ConnectedWallet!.Icon" title="@ConnectedWallet.Name" /></div>
+            if (!Connected)
+            {
+                <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))" disabled="@IsDisconnectedButtonDisabled">@DisconnectedButtonContent</div>
+            }
+            else
+            {
+                <div class="wallet-connector-button" @onclick="@(async () => await OnConnectButtonClickAsync().ConfigureAwait(false))">Connected<img class="wallet-icon" src="@ConnectedWallet!.Icon" title="@ConnectedWallet.Name" /></div>
+            }
         }
-
         @if (PopupDialogShowing)
         {
-            <div id="myModal" class="modal" onclick="@(() => ModalClick())">
-                <!-- Modal content -->
-                <div class="modal-content @ModalContentPaddingStyle" @onclick:stopPropagation="true">
-                    <span hidden="@HideCloseButton" class="close" @onclick="HideConnectWalletDialog">&times;</span>
-                    <div class="modal-content-main">
-                        @if (Initialized && _wallets != null)
-                        {
-                            @if (ShowConnectedWalletWithBalance)
+            if (WalletsModalContent is not null)
+            {
+                @WalletsModalContent(new WalletsModalContentViewModel(Initialized, _wallets, Connected, ConnectedWallet, ConnectWalletAsync, DisconnectWalletAsync))
+            }
+            else
+            {
+                <div id="myModal" class="modal" onclick="@(() => ModalClick())">
+                    <!-- Modal content -->
+                    <div class="modal-content @ModalContentPaddingStyle" @onclick:stopPropagation="true">
+                        <span hidden="@HideCloseButton" class="close" @onclick="HideConnectWalletDialog">&times;</span>
+                        <div class="modal-content-main">
+                            @if (Initialized && _wallets != null)
                             {
-                                <div class="wallet-card">
-                                    <span class="wallet-card-title">@ConnectedWallet!.Name Wallet</span>
-                                    <img class="wallet-card-icon" src="@ConnectedWallet.Icon" title="@ConnectedWallet.Name" />
-                                    <div class="wallet-balance-container">
-                                        <div class="wallet-balance-row dif centered">
-                                            <span class="wallet-balance-header">Balance</span>
-                                        </div>
-                                        <div class="wallet-balance-row dif centered">
-                                            <span class="wallet-network">@ConnectedWallet.Network</span>
-                                        </div>
-                                        <div class="wallet-balance-row wallet-available">
-                                            <span>Available</span>
-                                            <div class="wallet-adaamount-container">
-                                                <span class="wallet-balance-ada">@ConnectedWallet.BalanceAda</span>
-                                                <span class="wallet-balance-decimal">.</span>
-                                                <span class="wallet-balance-lovelace">@ConnectedWallet.BalanceRemainder</span>
-                                                <span class="wallet-balance-currency">@ConnectedWallet.CoinCurrency</span>
-                                            </div>
-                                        </div>
-                                        <div class="wallet-balance-row wallet-unavailable">
-                                            <span>Reserved</span>
-                                            <div class="wallet-adaamount-container">
-                                                <span class="wallet-balance-ada">@ConnectedWallet.TokenPreservationAda</span>
-                                                <span class="wallet-balance-decimal">.</span>
-                                                <span class="wallet-balance-lovelace">@ConnectedWallet.TokenPreservationRemainder</span>
-                                                <span class="wallet-balance-currency">@ConnectedWallet.CoinCurrency</span>
-                                            </div>
-                                        </div>
-                                        <div class="wallet-balance-row dif centered">
-                                            <span>Collectibles @ConnectedWallet.TokenCount</span>
-                                        </div>
-                                    </div>
-                                    <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
-                                </div>
-                            }
-                            else
-                            {
-                                @if (Layout == WalletConnectorLayout.List)
+                                @if (ShowConnectedWalletWithBalance)
                                 {
-                                    <div class="wallet-choose-header">
-                                        @Header
-                                    </div>
-                                    @foreach (var extension in _wallets)
-                                    {
-                                        <div class="wallet-item">
-                                            <img class="wallet-icon" src="@extension.Icon" title="@extension.Name"/>
-                                            <span class="wallet-name">@extension.Name Wallet</span>
-                                            @if (extension.Installed && extension.Connected)
-                                            {
-                                                <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
-                                            }
-                                            else if (extension.Installed)
-                                            {
-                                                <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
-                                            }
-                                            else
-                                            {
-                                                <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
-                                            }
+                                    <div class="wallet-card">
+                                        <span class="wallet-card-title">@ConnectedWallet!.Name Wallet</span>
+                                        <img class="wallet-card-icon" src="@ConnectedWallet.Icon" title="@ConnectedWallet.Name" />
+                                        <div class="wallet-balance-container">
+                                            <div class="wallet-balance-row dif centered">
+                                                <span class="wallet-balance-header">Balance</span>
+                                            </div>
+                                            <div class="wallet-balance-row dif centered">
+                                                <span class="wallet-network">@ConnectedWallet.Network</span>
+                                            </div>
+                                            <div class="wallet-balance-row wallet-available">
+                                                <span>Available</span>
+                                                <div class="wallet-adaamount-container">
+                                                    <span class="wallet-balance-ada">@ConnectedWallet.BalanceAda</span>
+                                                    <span class="wallet-balance-decimal">.</span>
+                                                    <span class="wallet-balance-lovelace">@ConnectedWallet.BalanceRemainder</span>
+                                                    <span class="wallet-balance-currency">@ConnectedWallet.CoinCurrency</span>
+                                                </div>
+                                            </div>
+                                            <div class="wallet-balance-row wallet-unavailable">
+                                                <span>Reserved</span>
+                                                <div class="wallet-adaamount-container">
+                                                    <span class="wallet-balance-ada">@ConnectedWallet.TokenPreservationAda</span>
+                                                    <span class="wallet-balance-decimal">.</span>
+                                                    <span class="wallet-balance-lovelace">@ConnectedWallet.TokenPreservationRemainder</span>
+                                                    <span class="wallet-balance-currency">@ConnectedWallet.CoinCurrency</span>
+                                                </div>
+                                            </div>
+                                            <div class="wallet-balance-row dif centered">
+                                                <span>Collectibles @ConnectedWallet.TokenCount</span>
+                                            </div>
                                         </div>
-                                    }
+                                        <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
+                                    </div>
                                 }
                                 else
                                 {
-                                    <div class="wallet-choose-header">
-                                        @Header
-                                    </div>
-                                    <div class="wallet-card-container">
+                                    @if (Layout == WalletConnectorLayout.List)
+                                    {
+                                        <div class="wallet-choose-header">
+                                            @Header
+                                        </div>
                                         @foreach (var extension in _wallets)
                                         {
-                                            <div class="wallet-card">
-                                                <span class="wallet-card-title">@extension.Name Wallet</span>
-                                                <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name"/>
+                                            <div class="wallet-item">
+                                                <img class="wallet-icon" src="@extension.Icon" title="@extension.Name"/>
+                                                <span class="wallet-name">@extension.Name Wallet</span>
                                                 @if (extension.Installed && extension.Connected)
                                                 {
                                                     <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
@@ -134,19 +119,46 @@ else
                                                 }
                                             </div>
                                         }
-                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="wallet-choose-header">
+                                            @Header
+                                        </div>
+                                        <div class="wallet-card-container">
+                                            @foreach (var extension in _wallets)
+                                            {
+                                                <div class="wallet-card">
+                                                    <span class="wallet-card-title">@extension.Name Wallet</span>
+                                                    <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name"/>
+                                                    @if (extension.Installed && extension.Connected)
+                                                    {
+                                                        <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
+                                                    }
+                                                    else if (extension.Installed)
+                                                    {
+                                                        <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            <div>
-                                <span>Looking for installed wallet extensions...</span>
-                            </div>
-                        }
+                            else
+                            {
+                                <div>
+                                    <span>Looking for installed wallet extensions...</span>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         }
     </div>
 }

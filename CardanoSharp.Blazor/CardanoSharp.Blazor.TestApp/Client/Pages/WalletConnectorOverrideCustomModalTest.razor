@@ -1,4 +1,4 @@
-﻿@page "/walletconnectortest-customvisuals"
+﻿@page "/walletconnectortest-custommodal"
 @using CardanoSharp.Wallet.CIPs.CIP30.Models
 @using CardanoSharp.Wallet.Models;
 @using CardanoSharp.Blazor.Components;
@@ -17,53 +17,38 @@
 <PageTitle>Wallet Connector Test</PageTitle>
 
 <h1>Wallet Connector Test</h1>
-<p>This page exemplifies using the wallet connector with custom visuals.
-    Use 'WalletConnectorButtonContent' and 'WalletsModalContent' to provide your own components (with your app's look and feel) for displaying the connector test</p>
+<p>This page exemplifies using the wallet connector with the standard connector button but a custom modal popup.
+    Use 'WalletsModalContent' to provide your own components (with your app's look and feel) for displaying the connector test</p>
 <WalletConnector @ref="myWebWallets" OutputDebug="true" OnConnect="WalletConnected" OnDisconnect="WalletDisconnected">
-    <WalletConnectorButtonContent>
-        <button @onclick="() => { _isWalletsVisible = true; }">
-            @if (context.IsConnected)
+    <WalletsModalContent>
+        <div style="position: fixed; width: 220px; height: 150px; background-color: #b5cbf1; padding: 15px; top: 50%; left: 50%;">
+            <button @onclick="() => { _isWalletsVisible = false; }">x</button>
+            @if (context.IsWalletConnected)
             {
-                <span>Connected <img style="width: 18px;" src="@context.ConnectedWallet!.Icon" title="@context.ConnectedWallet.Name"/></span>
+                <ul><li>Connected wallet: <img style="width: 18px;" src="@context.ConnectedWallet!.Icon" title="@context.ConnectedWallet.Name"/></li>
+                    <li>Balance: @context.ConnectedWallet.BalanceAda₳</li>
+                    <button @onclick="() => { context.DisconnectWalletAsync?.Invoke(false); }">Disconnect</button>
+                </ul>
             }
             else
             {
-                <span>Connect to wallet</span>
+                <ul>
+                    @foreach (WalletExtensionState wallet in context.Wallets!)
+                    {
+                        <li style="margin-left: 15px">@wallet.Name <img style="width: 18px;" src="@wallet.Icon" title="@wallet.Name"/>
+                            @if (wallet.Installed)
+                            {
+                                <button @onclick="() => { context.ConnectWalletAsync?.Invoke(wallet.Key, false); }">Connect</button>
+                            }
+                            else
+                            {
+                                <a href="@wallet.Url" target="_blank">Install</a>
+                            }
+                        </li>
+                    }
+                </ul>
             }
-        </button>
-    </WalletConnectorButtonContent>
-    <WalletsModalContent>
-        @if (_isWalletsVisible)
-        {
-            <div style="position: fixed; width: 220px; height: 150px; background-color: #b5cbf1; padding: 15px; top: 50%; left: 50%;">
-                <button @onclick="() => { _isWalletsVisible = false; }">x</button>
-                @if (context.IsWalletConnected)
-                {
-                    <ul><li>Connected wallet: <img style="width: 18px;" src="@context.ConnectedWallet!.Icon" title="@context.ConnectedWallet.Name"/></li>
-                        <li>Balance: @context.ConnectedWallet.BalanceAda₳</li>
-                        <button @onclick="() => { context.DisconnectWalletAsync?.Invoke(false); }">Disconnect</button>
-                    </ul>
-                }
-                else
-                {
-                    <ul>
-                        @foreach (WalletExtensionState wallet in context.Wallets!)
-                        {
-                            <li style="margin-left: 15px">@wallet.Name <img style="width: 18px;" src="@wallet.Icon" title="@wallet.Name"/>
-                                @if (wallet.Installed)
-                                {
-                                    <button @onclick="() => { context.ConnectWalletAsync?.Invoke(wallet.Key, false); }">Connect</button>
-                                }
-                                else
-                                {
-                                    <a href="@wallet.Url" target="_blank">Install</a>
-                                }
-                            </li>
-                        }
-                    </ul>
-                }
-            </div>
-        }
+        </div>
     </WalletsModalContent>
 </WalletConnector>
 
