@@ -19,12 +19,16 @@
 <h1>Wallet Connector Test</h1>
 <p>This page exemplifies using the wallet connector with a custom connector button, but the standard modal popup.
     Use 'WalletConnectorButtonContent' to provide your own components (with your app's look and feel) for displaying the connector test</p>
-<WalletConnector @ref="myWebWallets" OutputDebug="true" OnConnect="WalletConnected" OnDisconnect="WalletDisconnected">
+<WalletConnector @ref="myWebWallets" PersistConnectedWallet="true" OutputDebug="true" OnConnect="WalletConnected" OnDisconnect="WalletDisconnected">
     <WalletConnectorButtonContent>
         <button @onclick="() => { _isWalletsVisible = true; }">
             @if (!context.Initialized)
             {
                 <div>INTIALIZING...</div>
+            }
+            else if (context.Connecting)
+            {
+                <div>CONNECTING...</div>
             }
             else if (context.IsConnected)
             {
