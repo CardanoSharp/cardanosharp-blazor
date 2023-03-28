@@ -20,7 +20,7 @@
 
 @if (WalletConnectorButtonContent is not null && WalletsModalContent is not null)
 {
-    @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, ConnectedWallet, Initialized))
+    @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, ConnectedWallet, Initialized, Connecting))
     @WalletsModalContent(new WalletsModalContentViewModel(Initialized, _wallets, Connected, ConnectedWallet, ConnectWalletAsync, DisconnectWalletAsync))
 }
 else
@@ -28,7 +28,7 @@ else
     <div class="wallet-connector">
         @if (WalletConnectorButtonContent is not null)
         {
-            @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, ConnectedWallet, Initialized))
+            @WalletConnectorButtonContent(new WalletButtonViewModel(Connected, ConnectedWallet, Initialized, Connecting))
         }
         else
         {
@@ -111,7 +111,7 @@ else
                                                 }
                                                 else if (extension.Installed)
                                                 {
-                                                    <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
+                                                    <button disabled="@Connecting" class="@(Connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
                                                 }
                                                 else
                                                 {
@@ -137,7 +137,7 @@ else
                                                     }
                                                     else if (extension.Installed)
                                                     {
-                                                        <button disabled="@_connecting" class="@(_connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
+                                                        <button disabled="@Connecting" class="@(Connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
                                                     }
                                                     else
                                                     {
