@@ -161,9 +161,9 @@ public partial class WalletConnector
         _selfReference = DotNetObjectReference.Create(this);
         _wallets = await _walletConnectorJs.Init(SupportedExtensions, _selfReference);
 
-        Initialized = true;
+		Initialized = true;
 
-        await InitializePersistedWalletAsync();
+		await InitializePersistedWalletAsync();
 
         if (!Connected)
         {
