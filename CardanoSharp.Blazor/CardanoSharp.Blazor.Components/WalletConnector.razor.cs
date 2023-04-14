@@ -454,7 +454,14 @@ public partial class WalletConnector
         var utxoList = new List<Utxo>();
         foreach (var utxoCbor in utxoCbors)
         {
-            utxoList.Add(utxoCbor.HexToByteArray().DeserializeUtxo());
+            try
+            {
+                utxoList.Add(utxoCbor.HexToByteArray().DeserializeUtxo());
+            }
+            catch (Exception ex)
+            {
+                throw new DeserializationException(utxoCbor, "error during utxo deserialization", ex);
+            }
         }
         return utxoList.ToArray();
     }
