@@ -483,7 +483,7 @@ namespace CardanoSharp.Blazor.Components.Services
             var response = new List<Address>();
             foreach (var address in addresses)
             {
-                response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Reward, ConnectedWallet!.Network),
+                response.Add(new Address(ComponentUtils.GetPrefix(AddressType.Stake, ConnectedWallet!.Network),
                     address.HexToByteArray()));
             }
 
