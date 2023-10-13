@@ -49,6 +49,12 @@ public partial class WalletConnector
     public bool DisconnectOnConnectButtonClick { get; set; } = false;
 
     [Parameter]
+    public string ConnectButtonText { get; set; } = "Connect";
+
+    [Parameter]
+    public string DisconnectButtonText { get; set; } = "Disconnect";
+
+    [Parameter]
     public List<WalletExtension> SupportedExtensions { get; set; } = new List<WalletExtension>()
     {
         new WalletExtension() {
@@ -168,7 +174,7 @@ public partial class WalletConnector
 
         if (!Connected)
         {
-            DisconnectedButtonContent = "Connect";
+            DisconnectedButtonContent = ConnectButtonText;
             IsDisconnectedButtonDisabled = false;
         }
 
