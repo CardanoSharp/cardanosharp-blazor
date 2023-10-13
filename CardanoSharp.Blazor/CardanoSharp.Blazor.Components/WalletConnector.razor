@@ -133,11 +133,11 @@ else
                                                     <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name"/>
                                                     @if (extension.Installed && extension.Connected)
                                                     {
-                                                        <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">Disconnect</button>
+                                                        <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">@DisconnectButtonText</button>
                                                     }
                                                     else if (extension.Installed)
                                                     {
-                                                        <button disabled="@Connecting" class="@(Connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">Connect</button>
+                                                        <button disabled="@Connecting" class="@(Connecting ? "wallet-button-disabled" : "wallet-button")" @onclick="@(async () => await ConnectWalletAsync(extension.Key))">@ConnectButtonText</button>
                                                     }
                                                     else
                                                     {
