@@ -129,8 +129,15 @@ else
                                             @foreach (var extension in _wallets)
                                             {
                                                 <div class="wallet-card">
-                                                    <span class="wallet-card-title">@extension.Name Wallet</span>
+                                                    @if (WalletConnectorNamePlacement == WalletConnectorNamePlacements.AboveWalletCard)
+                                                    {
+                                                        <span class="wallet-card-title">@extension.Name</span>
+                                                    }                                                    
                                                     <img class="wallet-card-icon" src="@extension.Icon" title="@extension.Name"/>
+                                                    @if (WalletConnectorNamePlacement == WalletConnectorNamePlacements.BelowWalletCard)
+                                                    {
+                                                        <span class="wallet-card-title">@extension.Name</span>
+                                                    }
                                                     @if (extension.Installed && extension.Connected)
                                                     {
                                                         <button class="wallet-button" @onclick="@(async () => await DisconnectWalletAsync())">@DisconnectButtonText</button>
