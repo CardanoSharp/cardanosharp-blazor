@@ -11,8 +11,8 @@
     <Description>CardanoSharp.Blazor.Components is a component library for C# devs to easily get started with developing dApps for Cardano.</Description>
     <Authors>CardanoSharp</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression
-    <Version>8.0.0</Version
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>8.0.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
