@@ -119,6 +119,10 @@ else
                                                 }
                                             </div>
                                         }
+                                        @if (AdditionalWalletsContent is not null)
+                                        {
+                                            @AdditionalWalletsContent
+                                        }
                                     }
                                     else
                                     {
@@ -151,6 +155,10 @@ else
                                                         <a class="wallet-button" href="@extension.Url" target="_blank">Install</a>
                                                     }
                                                 </div>
+                                            }
+                                            @if (AdditionalWalletsContent is not null)
+                                            {
+                                                @AdditionalWalletsContent
                                             }
                                         </div>
                                     }
