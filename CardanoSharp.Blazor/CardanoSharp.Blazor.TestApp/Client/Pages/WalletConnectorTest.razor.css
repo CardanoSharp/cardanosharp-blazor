@@ -1,0 +1,39 @@
+﻿.wallet-card {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	border: 1px solid grey;
+	border-radius: 1em;
+	padding: 0.5em;
+	margin: 0.2em;
+	min-width: 170px;
+}
+
+.wallet-card-title {
+	font-size: 1.5em;
+}
+
+.wallet-button {
+	color: black;
+	display: inline-flex;
+	border: 1px solid grey;
+	border-radius: 0.5em;
+	padding: 0.5em;
+	margin: 0.5em 0;
+	cursor: pointer;
+	min-width: 6em;
+	justify-content: center;
+	text-decoration: none;
+}
+
+	.wallet-button:hover,
+	.wallet-button:focus {
+		color: #aaa;
+		text-decoration: none;
+		cursor: pointer;
+	}
+
+.wallet-card-icon {
+	max-width: 110px;
+	max-height: 95px;
+}

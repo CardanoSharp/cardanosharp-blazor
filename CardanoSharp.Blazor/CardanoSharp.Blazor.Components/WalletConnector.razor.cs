@@ -114,6 +114,9 @@ public partial class WalletConnector
     public RenderFragment<WalletsModalContentViewModel> WalletsModalContent { get; set; } = null!;
 
     [Parameter]
+    public RenderFragment AdditionalWalletsContent { get; set; } = null!;
+
+    [Parameter]
     public WalletConnectorNamePlacements WalletConnectorNamePlacement { get; set; } = WalletConnectorNamePlacements.AboveWalletCard;
 
     public WalletExtensionState? ConnectedWallet { get; private set; }
