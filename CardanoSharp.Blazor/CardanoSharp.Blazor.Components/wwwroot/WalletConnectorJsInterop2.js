@@ -3,13 +3,11 @@ export function createWalletConnector() {
 		connectedWallet: null,
 
 		init: (dotNetRef) => {
-			document.onkeydown = function (e) {
-				e = e || window.event;
-				if (e.key === "Escape") {
-					//console.log("Escape");
+			document.addEventListener('keyup', (event) => {
+				if (event.key === "Escape") {
 					dotNetRef.invokeMethodAsync("EscapeKeyPressed");
 				}
-			};
+			})
 		},
 
 		isWalletInstalled: function (walletkey) {
