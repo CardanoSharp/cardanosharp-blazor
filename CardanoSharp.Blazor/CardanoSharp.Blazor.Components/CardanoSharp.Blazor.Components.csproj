@@ -12,7 +12,7 @@
     <Authors>CardanoSharp</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>8.0.2</Version>
+    <Version>8.0.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
