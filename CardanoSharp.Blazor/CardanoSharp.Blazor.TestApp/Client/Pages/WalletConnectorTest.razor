@@ -28,7 +28,8 @@
     HideOnModalClick="ModalClickHideOptions.WhenConnected"
     PopupMode="ConnectedDisplayMode.ShowAll"
     OnConnect="WalletConnected" 
-    OnDisconnect="WalletDisconnected">
+    OnDisconnect="WalletDisconnected"
+    OnInitComplete="WalletInitComplete">
     <AdditionalWalletsContent>
         <div class="wallet-card">
             <span class="wallet-card-title">Extra Content</span>
@@ -163,6 +164,12 @@
     {
         DisplayResult.Clear();
         DisplayResult.Add($"Wallet disconnected event.");
+    }
+
+    private void WalletInitComplete()
+    {
+        DisplayResult.Clear();
+		DisplayResult.Add($"Wallet init complete event.");
     }
 
     private void TestGetWalletExtensionStates()

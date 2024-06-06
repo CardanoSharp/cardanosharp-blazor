@@ -108,6 +108,9 @@ public partial class WalletConnector
     public EventCallback OnDisconnect { get; set; }
 
     [Parameter]
+    public EventCallback OnInitComplete { get; set; }
+
+    [Parameter]
     public RenderFragment<WalletButtonViewModel> WalletConnectorButtonContent { get; set; } = null!;
 
     [Parameter]
@@ -183,6 +186,9 @@ public partial class WalletConnector
             DisconnectedButtonContent = ConnectButtonText;
             IsDisconnectedButtonDisabled = false;
         }
+
+        if (OnInitComplete.HasDelegate)
+            _ = OnInitComplete.InvokeAsync();
 
         return;
     }
