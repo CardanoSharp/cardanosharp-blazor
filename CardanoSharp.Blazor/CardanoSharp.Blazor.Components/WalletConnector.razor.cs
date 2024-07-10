@@ -143,8 +143,6 @@ public partial class WalletConnector
     protected string DisconnectedButtonContent = "Initializing...";
     protected bool IsDisconnectedButtonDisabled = true;
 
-    public bool Connecting { get; private set; }
-
     public bool Initialized { get; private set; }
 
     public bool Connected
@@ -328,9 +326,6 @@ public partial class WalletConnector
             if (!suppressEvent)
                 await OnConnectStart.InvokeAsync().ConfigureAwait(false);
 
-            Connecting = _configuredWalletExtension.ApplyConnectingStatus;
-            StateHasChanged();
-
             var result = await _walletConnectorJs!.ConnectWallet(walletKey);
             if (result)
             {
@@ -373,7 +368,6 @@ public partial class WalletConnector
         }
         finally
         {
-            Connecting = false;
             StateHasChanged();
         }
         return false;

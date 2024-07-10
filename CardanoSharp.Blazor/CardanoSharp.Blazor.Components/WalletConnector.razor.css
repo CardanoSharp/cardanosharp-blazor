@@ -30,7 +30,7 @@
 	border-radius: 1em;
 	padding: 0.5em;
 	margin: 0.2em;
-    min-width: 170px;
+	min-width: 170px;
 }
 
 .wallet-card-icon {
@@ -85,17 +85,6 @@
 		text-decoration: none;
 		cursor: pointer;
 	}
-
-.wallet-button-disabled {
-	color: #ccc;
-	display: inline-flex;
-	border: 1px solid #ccc;
-	border-radius: 0.5em;
-	padding: 0.5em;
-	margin: 0.5em 0;
-	min-width: 6em;
-	justify-content: center
-}
 
 /* The Modal (background) */
 .modal {
