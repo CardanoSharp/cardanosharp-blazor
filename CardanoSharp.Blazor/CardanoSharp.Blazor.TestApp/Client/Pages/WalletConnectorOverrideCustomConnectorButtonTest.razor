@@ -26,10 +26,6 @@
             {
                 <div>INTIALIZING...</div>
             }
-            else if (context.Connecting)
-            {
-                <div>CONNECTING...</div>
-            }
             else if (context.IsConnected)
             {
                 <span onclick="@(() => myWebWallets?.ShowConnectWalletDialog())">Connected <img style="width: 18px;" src="@context.ConnectedWallet!.Icon" title="@context.ConnectedWallet.Name"/></span>

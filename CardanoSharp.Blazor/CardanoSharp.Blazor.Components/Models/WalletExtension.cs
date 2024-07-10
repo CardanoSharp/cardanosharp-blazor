@@ -10,8 +10,6 @@
 
         public string Url { get; set; } = "";
 
-        public bool ApplyConnectingStatus { get; set; } = true;
-
         public WalletExtension()
         {
         }
@@ -22,7 +20,6 @@
             Name = copy.Name;
             Icon = copy.Icon;
             Url = copy.Url;
-            ApplyConnectingStatus = copy.ApplyConnectingStatus;
         }
     }
 }
