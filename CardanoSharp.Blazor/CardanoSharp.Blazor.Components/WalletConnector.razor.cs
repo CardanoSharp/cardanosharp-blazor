@@ -61,7 +61,7 @@ public partial class WalletConnector
             Key = "eternl",
             Name = "Eternl",
             Icon = WalletIcons.EternlIcon,
-            Url = "https://eternl.io"
+            Url = "https://eternl.io",
         },
         new WalletExtension() {
             Key = "gerowallet",
@@ -310,9 +310,16 @@ public partial class WalletConnector
     {
         await DisconnectWalletAsync(true).ConfigureAwait(false);
 
+        var _configuredWalletExtension = _wallets!.FirstOrDefault(x => x.Key == walletKey);
+
         if (walletKey == null)
         {
             await OnConnectError.InvokeAsync(new ArgumentNullException(nameof(walletKey))).ConfigureAwait(false);
+            return false;
+        }
+        else if (_configuredWalletExtension == null)
+        {
+            await OnConnectError.InvokeAsync(new ArgumentOutOfRangeException(nameof(walletKey))).ConfigureAwait(false);
             return false;
         }
 
@@ -321,7 +328,7 @@ public partial class WalletConnector
             if (!suppressEvent)
                 await OnConnectStart.InvokeAsync().ConfigureAwait(false);
 
-            Connecting = true;
+            Connecting = _configuredWalletExtension.ApplyConnectingStatus;
             StateHasChanged();
 
             var result = await _walletConnectorJs!.ConnectWallet(walletKey);
