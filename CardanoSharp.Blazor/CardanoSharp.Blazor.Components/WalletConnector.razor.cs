@@ -294,7 +294,7 @@ public partial class WalletConnector
                 ConnectedWallet.NativeAssets = balance.MultiAsset.SelectMany(policy =>
                        policy.Value.Token.Select(asset =>
                            new KeyValuePair<string, ulong>(
-                               $"{policy.Key.ToStringHex()}{asset.Key.ToStringHex()}",
+                               $"{policy.Key.ToStringHex()}-{asset.Key.ToStringHex()}",
                                (ulong)asset.Value)))
                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             }
