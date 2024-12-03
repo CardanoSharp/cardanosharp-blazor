@@ -27,7 +27,8 @@
     AutoCloseOnConnect="true"
     HideOnModalClick="ModalClickHideOptions.WhenConnected"
     PopupMode="ConnectedDisplayMode.ShowAll"
-    OnConnect="WalletConnected" 
+    OnConnect="WalletConnected"
+    OnConnectStart="WalletConnectStartAsync"
     OnDisconnect="WalletDisconnected"
     OnInitComplete="WalletInitComplete">
     <AdditionalWalletsContent>
@@ -158,6 +159,13 @@
     {
         DisplayResult.Clear();
         DisplayResult.Add($"Wallet connected event.");
+    }
+
+    private async Task WalletConnectStartAsync(string walletKey)
+    {
+        DisplayResult.Clear();
+        DisplayResult.Add($"Wallet connect start event. Wallet Key: {walletKey}");
+        await Task.Delay(5000);
     }
 
     private void WalletDisconnected()

@@ -96,7 +96,7 @@ public partial class WalletConnector
     public ConnectedDisplayMode PopupMode { get; set; } = ConnectedDisplayMode.ShowConnected;
 
     [Parameter]
-    public EventCallback OnConnectStart { get; set; }
+    public EventCallback<string> OnConnectStart { get; set; }
 
     [Parameter]
     public EventCallback OnConnect { get; set; }
@@ -324,7 +324,7 @@ public partial class WalletConnector
         try
         {
             if (!suppressEvent)
-                await OnConnectStart.InvokeAsync().ConfigureAwait(false);
+                await OnConnectStart.InvokeAsync(walletKey).ConfigureAwait(false);
 
             var result = await _walletConnectorJs!.ConnectWallet(walletKey);
             if (result)
