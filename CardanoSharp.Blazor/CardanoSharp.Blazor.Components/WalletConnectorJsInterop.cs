@@ -45,9 +45,17 @@ namespace CardanoSharp.Blazor.Components
                 var walletState = new WalletExtensionState(wallet);
                 if (!String.IsNullOrEmpty(walletState.Key))
                 {
-                    walletState.Installed = await IsWalletInstalled(walletState.Key);
-                    if (walletState.Installed)
-                        walletState.Version = await GetWalletApiVersion(walletState.Key);
+                    if (wallet.AssumeInstalled)
+                    {
+                        walletState.Installed = true;
+                    }
+                    else
+                    {
+                        walletState.Installed = await IsWalletInstalled(walletState.Key);
+                        if (walletState.Installed)
+                            walletState.Version = await GetWalletApiVersion(walletState.Key);
+                    }
+
                     Wallets.Add(walletState);
                 }
             }

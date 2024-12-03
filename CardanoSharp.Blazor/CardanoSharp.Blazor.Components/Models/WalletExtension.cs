@@ -10,6 +10,8 @@
 
         public string Url { get; set; } = "";
 
+        public bool AssumeInstalled { get; set; } = false;
+
         public WalletExtension()
         {
         }

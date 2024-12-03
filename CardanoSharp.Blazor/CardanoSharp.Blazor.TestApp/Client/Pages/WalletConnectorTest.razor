@@ -30,7 +30,8 @@
     OnConnect="WalletConnected"
     OnConnectStart="WalletConnectStartAsync"
     OnDisconnect="WalletDisconnected"
-    OnInitComplete="WalletInitComplete">
+    OnInitComplete="WalletInitComplete"
+    SupportedExtensions="TestExtensions">
     <AdditionalWalletsContent>
         <div class="wallet-card">
             <span class="wallet-card-title">Extra Content</span>
@@ -145,6 +146,41 @@
     private ulong GetUtxosAmount = 0; 
     private int GetUtxosPaginatePage = -1; 
     private int GetUtxosPaginateLimit = -1; 
+
+    private List<WalletExtension> TestExtensions { get; set; } = new List<WalletExtension>()
+    {
+        new WalletExtension() {
+            Key = "eternl",
+            Name = "Eternl",
+            Icon = CardanoSharp.Blazor.Components.Utils.WalletIcons.EternlIcon,
+            Url = "https://eternl.io",
+        },
+        new WalletExtension() {
+            Key = "gerowallet",
+            Name = "Gero",
+            Icon = CardanoSharp.Blazor.Components.Utils.WalletIcons.GeroIcon,
+            Url = "https://gerowallet.io"
+        },
+        new WalletExtension() {
+            Key = "nami",
+            Name = "Nami",
+            Icon = CardanoSharp.Blazor.Components.Utils.WalletIcons.NamiIcon,
+            Url = "https://namiwallet.io"
+        },
+        new WalletExtension() {
+            Key = "typhoncip30",
+            Name = "Typhon",
+            Icon = CardanoSharp.Blazor.Components.Utils.WalletIcons.TyphonIcon,
+            Url = "https://typhonwallet.io"
+        },
+        new WalletExtension() {
+            Key = "flint",
+            Name = "Flint",
+            Icon = CardanoSharp.Blazor.Components.Utils.WalletIcons.FlintIcon,
+            Url = "https://flint-wallet.com",
+            AssumeInstalled = true
+        },
+    };
 
     private List<string> DisplayResult = new List<string>();
 
